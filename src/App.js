@@ -1,26 +1,33 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-
-import "./App.css";
+import styled from "styled-components";
+import useWindowSize from "./hooks/useWindowSize";
+import useTimeout from "./hooks/useTimeout";
 
 function App() {
+  const size = useWindowSize();
   const [model, setModel] = useState(null);
-  const webcamRef = React.useRef(null);
-  const [videoWidth, setVideoWidth] = useState(960);
-  const [videoHeight, setVideoHeight] = useState(640);
-  const videoConstraints = {
-    height: 1080,
-    width: 1920,
-    facingMode: "environment",
-  };
+  const [predictions, setPredictions] = useState(null);
+  const [mediaIsReady, setMediaIsReady] = useState(false);
+  const webcamRef = useRef(null);
+
+  const videoConstraints = useMemo(() => {
+    return {
+      height: size.height,
+      width: size.width,
+      facingMode: "user",
+      frameRate: {
+        ideal: 10,
+      },
+    };
+  }, [size]);
 
   async function loadModel() {
     try {
-      const detector = await poseDetection.createDetector(
-        poseDetection.SupportedModels.MoveNet
-      );
+      const MoveNet = poseDetection.SupportedModels.MoveNet;
+      const detector = await poseDetection.createDetector(MoveNet);
       setModel(detector);
     } catch (error) {}
   }
@@ -32,98 +39,110 @@ function App() {
   }, []);
 
   async function predictionFunction() {
-    if (!model) return
-    console.log(model)
-    //Clear the canvas for each prediction
-    var cnvs = document.getElementById("myCanvas");
-    var ctx = cnvs.getContext("2d");
-    ctx.clearRect(
-      0,
-      0,
-      webcamRef.current.video.videoWidth,
-      webcamRef.current.video.videoHeight
-    );
+    if (!model || !mediaIsReady) return;
     //Start prediction
-    const predictions = await model.detect(document.getElementById("img"));
-    if (predictions.length > 0) {
-      console.log(predictions);
-      for (let n = 0; n < predictions.length; n++) {
-        console.log(n);
-        if (predictions[n].score > 0.8) {
-          //Threshold is 0.8 or 80%
-          //Extracting the coordinate and the bounding box information
-          let bboxLeft = predictions[n].bbox[0];
-          let bboxTop = predictions[n].bbox[1];
-          let bboxWidth = predictions[n].bbox[2];
-          let bboxHeight = predictions[n].bbox[3] - bboxTop;
-          console.log("bboxLeft: " + bboxLeft);
-          console.log("bboxTop: " + bboxTop);
-          console.log("bboxWidth: " + bboxWidth);
-          console.log("bboxHeight: " + bboxHeight);
-          //Drawing begin
-          ctx.beginPath();
-          ctx.font = "28px Arial";
-          ctx.fillStyle = "red";
-          ctx.fillText(
-            predictions[n].class +
-              ": " +
-              Math.round(parseFloat(predictions[n].score) * 100) +
-              "%",
-            bboxLeft,
-            bboxTop
-          );
-          ctx.rect(bboxLeft, bboxTop, bboxWidth, bboxHeight);
-          ctx.strokeStyle = "#FF0000";
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          console.log("detected");
-        }
-      }
+    try {
+      const videoPredictions = await model.estimatePoses(
+        document.getElementById("img")
+      );
+      setPredictions(videoPredictions);
+      setTimeout(() => predictionFunction(), 500
+      )
+    } catch (error) {
+      console.error(error);
     }
-    //Rerun prediction by timeout
-    setTimeout(() => predictionFunction(), 500);
   }
 
+  useTimeout(() => {
+    predictionFunction();
+  }, 1000);
+
   return (
-    <div className="App">
-      {!model ? "loading" : "Hello"}
+    <div
+      style={{
+        textAlign: "center",
+        position: "relative",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
+      {
+        predictions?.[0]?.keypoints[0] && <>
+          <Noise top={predictions?.[0]?.keypoints[0].y} right={predictions?.[0]?.keypoints[0].x} />
+          <Noise top={predictions?.[0]?.keypoints[1].y} right={predictions?.[0]?.keypoints[1].x} />
+          <Noise top={predictions?.[0]?.keypoints[2].y} right={predictions?.[0]?.keypoints[2].x} />
+          <Noise top={predictions?.[0]?.keypoints[3].y} right={predictions?.[0]?.keypoints[3].x} />
+          <Noise top={predictions?.[0]?.keypoints[4].y} right={predictions?.[0]?.keypoints[4].x} />
 
-      <div style={{ position: "absolute", top: "400px" }}>
-        <Webcam
-          audio={false}
-          id="img"
-          ref={webcamRef}
-          screenshotQuality={1}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-        />
-      </div>
+          <Noise top={predictions?.[0]?.keypoints[5].y} right={predictions?.[0]?.keypoints[5].x} />
+          <Noise top={predictions?.[0]?.keypoints[6].y} right={predictions?.[0]?.keypoints[6].x} />
+          <Noise top={predictions?.[0]?.keypoints[7].y} right={predictions?.[0]?.keypoints[7].x} />
+          <Noise top={predictions?.[0]?.keypoints[8].y} right={predictions?.[0]?.keypoints[8].x} />
 
-      <div style={{ position: "absolute", top: "400px", zIndex: "9999" }}>
-        <canvas
-          id="myCanvas"
-          width={videoWidth}
-          height={videoHeight}
-          style={{ backgroundColor: "transparent" }}
-        />
-      </div>
+          <Noise top={predictions?.[0]?.keypoints[9].y} right={predictions?.[0]?.keypoints[9].x} />
+          <Noise top={predictions?.[0]?.keypoints[10].y} right={predictions?.[0]?.keypoints[10].x} />
+          <Noise top={predictions?.[0]?.keypoints[11].y} right={predictions?.[0]?.keypoints[11].x} />
+          <Noise top={predictions?.[0]?.keypoints[12].y} right={predictions?.[0]?.keypoints[12].x} />
 
-      <button
-        variant={"contained"}
+          <Noise top={predictions?.[0]?.keypoints[13].y} right={predictions?.[0]?.keypoints[13].x} />
+          <Noise top={predictions?.[0]?.keypoints[14].y} right={predictions?.[0]?.keypoints[14].x} />
+          <Noise top={predictions?.[0]?.keypoints[15].y} right={predictions?.[0]?.keypoints[15].x} />
+          <Noise top={predictions?.[0]?.keypoints[16].y} right={predictions?.[0]?.keypoints[16].x} />
+        
+        </>
+      }
+   
+
+      <div
         style={{
-          color: "white",
-          backgroundColor: "blueviolet",
-          width: "50%",
-          maxWidth: "250px",
-        }}
-        onClick={() => {
-          predictionFunction();
+          position: "fixed",
+          bottom: 0,
+          zIndex: 999999,
+          background:"rgba(255,255,255,.5)",
         }}
       >
-        Start Detect
-      </button>
+        {mediaIsReady && "media"}
+        {JSON.stringify(predictions?.[0]?.keypoints.length)}
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          left: 0,
+       
+          
+        }}
+      >
+        {videoConstraints?.height && (
+          <Webcam
+            audio={false}
+            id="img"
+            ref={webcamRef}
+            onUserMedia={() => setMediaIsReady(true)}
+            screenshotQuality={1}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            mirrored
+           
+          />
+        )}
+      </div>
     </div>
   );
 }
 
 export default App;
+
+const Noise = styled.div`
+  text-align:center;
+  position:fixed;
+  z-index:999999;
+  width:20px;
+  height:20px;
+  background-color:black ;
+  border-radius:50% ;
+  top:${props=>props.top+'px'};
+  right:${props=>props.right+'px'};
+`
