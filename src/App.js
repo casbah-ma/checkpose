@@ -1,60 +1,71 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-import { Stage, Layer, Line } from "react-konva";
+import { Stage, Layer, Line, Circle } from "react-konva";
 import styled from "styled-components";
 import loadMoveNet from "./lib/loadMoveNet";
-import useWindowSize from "./hooks/useWindowSize";
 import bodyMapper from "./lib/bodyMap";
+import useTimeout from "./hooks/useTimeout";
+import videoConstraints from "./constants/videoConstraints";
 
-const LINE_COLOR = "white";
+const LINE_COLOR = "orange";
 const LINE_WIDTH = 4;
+const MIN_SCORE = 0.55;
 
 function App() {
-  const size = useWindowSize();
   const [model, setModel] = useState(null);
   const [predictions, setPredictions] = useState(null);
-  const webcamRef = useRef(null);
+  const [showCanvas, setShowCanvas] = useState(false);
+  const [streamReady, setStreamReady] = useState(false);
+  const [score, setScore] = useState(null);
   const videoRef = useRef(null);
 
-  
   useEffect(() => {
     tf.ready().then(() => {
       loadMoveNet(setModel);
     });
   }, []);
 
-  const videoConstraints = useMemo(() => {
-    return {
-      height: size.height,
-      width: size.width,
-      facingMode: "user",
-      frameRate: {
-        ideal: 8,
-      },
-    };
-  }, [size]);
-
-
+  // useCallback and useMemo are not working here
+  // Refactor
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
-    if (!model || !videoRef || !videoRef.current) return;
-    try {
-      const videoPredictions = await model.estimatePoses(videoRef.current);
-      setPredictions(videoPredictions);
-    } catch (error) {
-      console.error(error);
+    if (!model || !videoRef?.current?.video) return;
+    if (streamReady) {
+      try {
+        const videoPredictions = await model.estimatePoses(videoRef.current.video);
+        setPredictions(videoPredictions);
+        setScore(videoPredictions[0]?.score * 1);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
+
   useEffect(() => {
-    const animation = requestAnimationFrame(predictionFunction);
+    if (score < MIN_SCORE) {
+      setShowCanvas(false);
+    }
+
+    /*add a penality to avoid fast change*/
+    if (score >= MIN_SCORE + 0.1) {
+      setShowCanvas(true);
+    }
+   
+  }, [score]);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(()=>predictionFunction());
     return () => cancelAnimationFrame(animation);
   }, [predictionFunction]);
 
   const bodyMap =
     useMemo(() => bodyMapper(predictions?.[0]?.keypoints), [predictions]) || {};
+
+  const handleMediaReady = useTimeout(() => setStreamReady(true), 1000);
+
   const {
     nose,
     leftShoulder,
@@ -73,23 +84,28 @@ function App() {
 
   return (
     <>
-      <div
+       {
+        !Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛ Chargement...</SystemMsg>
+      }
+      {
+        !showCanvas && Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⚠️ Corriger votre position</SystemMsg>
+      }
+
+      <Dot error={!showCanvas} />
+     
+     
+      <FixedContainer
         style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          left: 0,
-          width: videoRef?.current?.getBoundingClientRect().width,
-          height: videoRef?.current?.getBoundingClientRect().height,
           zIndex: 2,
-          background: "black",
+          background: "rgba(20,10,85,.95)",
         }}
       >
-        {Array.isArray(predictions?.[0]?.keypoints) && (
-          <Stage
-            width={videoRef?.current?.getBoundingClientRect().width}
-            height={videoRef?.current?.getBoundingClientRect().height}
-          >
+       
+        {Array.isArray(predictions?.[0]?.keypoints)  && (
+          <Stage width={videoConstraints.width} height={videoConstraints.height}>
+            <Layer>
+              <Circle radius={70} x={nose[0]} y={nose[1]} fill={LINE_COLOR} />
+            </Layer>
             <Layer>
               <Line
                 tension={0}
@@ -129,37 +145,80 @@ function App() {
             </Layer>
           </Stage>
         )}
-      </div>
+      </FixedContainer>
 
-      <VideoContainer>
-        <video controls id="demo-vid" autoPlay muted ref={videoRef}>
-          <source src="/demo.mp4#t=20" type="video/mp4" />
-        </video>
-
-        {videoConstraints?.height && false && (
-          <Webcam
-            audio={false}
-            id="img"
-            ref={webcamRef}
-            screenshotQuality={1}
-            screenshotFormat="image/jpeg"
-            videoConstraints={videoConstraints}
-            mirrored
-          />
-        )}
-      </VideoContainer>
+      <FixedContainer opacity="0">
+        <Webcam
+          onUserMedia={() => handleMediaReady()}
+          audio={false}
+          id="mywebcam"
+          ref={videoRef}
+          screenshotQuality={1}
+          screenshotFormat="image/jpeg"
+          videoConstraints={videoConstraints}
+        />
+      </FixedContainer>
+   
     </>
   );
 }
 
 export default App;
 
-const VideoContainer = styled.div`
+const FixedContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: ${videoConstraints.width+'px'};
+  height: ${videoConstraints.height+'px'};
+  left: 50%;
+  transform: translate(-50%, 0) scale(-1, 1);
   z-index: 1;
+  box-shadow: inset rgb(0 0 0 / 40%) 11px -12px 20px 20px;
 `;
+
+const SideBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  height: calc(100% );
+  z-index: 3;
+  background-color: #050312;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column ;
+  z-index:8;
+  h1 {
+    font-size: 1.9em;
+    font-weight:100;
+    color: white;
+    margin:0;
+    border-bottom:1px dashed rgba(255,255,255,.8) ;
+  }
+`;
+
+const Item = styled.div`
+
+`
+const Dot = styled.div`
+  position: fixed ;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 2px;
+  z-index:9;
+  background-color: ${props=>props.error ? 'red' : 'green'} ;
+`
+
+const SystemMsg =  styled.div`
+  position: fixed ;
+  top:10px;
+  left:0;
+  width: 100%;
+  height: 200px;
+  z-index:90;
+  color:white
+`
