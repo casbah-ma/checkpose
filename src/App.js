@@ -3,9 +3,9 @@ import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
 import { Stage, Layer, Line, Circle } from "react-konva";
-//import styled from "styled-components";
+import styled from "styled-components";
 import useWindowSize from "./hooks/useWindowSize";
-import useTimeout from "./hooks/useTimeout";
+import useInterval from "./hooks/useIInterval";
 
 /* The map from joint index to joint:
 * 0 : neck; 1 & 2 : eyes; 3 & 4 : ears
@@ -68,7 +68,7 @@ function App() {
   }, []);
 
   async function predictionFunction() {
-    if (!model && videoRef && videoRef.current) return;
+    if (!model || !videoRef || !videoRef.current) return;
     //Start prediction
     try {
       const videoPredictions = await model.estimatePoses(
@@ -76,15 +76,12 @@ function App() {
         videoRef.current
       );
       setPredictions(videoPredictions);
-      setTimeout(() => predictionFunction(), 20);
     } catch (error) {
       console.error(error);
     }
   }
 
-  useTimeout(() => {
-    predictionFunction();
-  }, 1000);
+  useInterval(predictionFunction, 50)
 
   return (
     <>
@@ -135,7 +132,7 @@ function App() {
                   points={Array.from(predictions?.[0]?.keypoints, (d) => [
                     d.x,
                     d.y,
-                  ]).flat().splice(10)}
+                  ]).flat()}
                   width={20}
                   height={20}
                   stroke={"red"}
@@ -147,18 +144,7 @@ function App() {
         )}
       </div>
 
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          left: 0,
-          width: size.width,
-          height: size.height,
-          zIndex: 1,
-          opacity: 0.3,
-        }}
-      >
+      <VideoContainer>
         <video controls id="demo-vid" autoPlay muted ref={videoRef}>
           <source src="/demo.mp4#t=20" type="video/mp4" />
         </video>
@@ -174,9 +160,19 @@ function App() {
             mirrored
           />
         )}
-      </div>
+      </VideoContainer>
     </>
   );
 }
 
 export default App;
+
+const VideoContainer = styled.div`
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+`
