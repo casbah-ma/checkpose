@@ -1,39 +1,15 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import * as poseDetection from "@tensorflow-models/pose-detection";
+
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-import { Stage, Layer, Line, Circle } from "react-konva";
+import { Stage, Layer, Line } from "react-konva";
 import styled from "styled-components";
+import loadMoveNet from "./lib/loadMoveNet";
 import useWindowSize from "./hooks/useWindowSize";
-import useInterval from "./hooks/useIInterval";
+import bodyMapper from "./lib/bodyMap";
 
-/* The map from joint index to joint:
-* 0 : neck; 1 & 2 : eyes; 3 & 4 : ears
-* 5 & 6 : shoulders; 7 & 8 : elbows; 9 & 10 : hands
-* 11 & 12 : hips; 13 & 14 : knees;
-* 15 & 16 : feet
-
-   const leftShoulder = poses[0].keypoints.find(
-        (k) => k.name === "left_shoulder"
-      );
-      const rightShoulder = poses[0].keypoints.find(
-        (k) => k.name === "right_shoulder"
-      );
-      const leftElbow = poses[0].keypoints.find((k) => k.name === "left_elbow");
-      const rightElbow = poses[0].keypoints.find(
-        (k) => k.name === "right_elbow"
-      );
-      const leftHip = poses[0].keypoints.find((k) => k.name === "left_hip");
-      const rightHip = poses[0].keypoints.find((k) => k.name === "right_hip");
-      const leftKnee = poses[0].keypoints.find((k) => k.name === "left_knee");
-      const rightKnee = poses[0].keypoints.find((k) => k.name === "right_knee");
-      const leftAnkle = poses[0].keypoints.find((k) => k.name === "left_ankle");
-      const rightAnkle = poses[0].keypoints.find(
-        (k) => k.name === "right_ankle"
-      );
-
-
-*/
+const LINE_COLOR = "white";
+const LINE_WIDTH = 4;
 
 function App() {
   const size = useWindowSize();
@@ -42,9 +18,16 @@ function App() {
   const webcamRef = useRef(null);
   const videoRef = useRef(null);
 
+  
+  useEffect(() => {
+    tf.ready().then(() => {
+      loadMoveNet(setModel);
+    });
+  }, []);
+
   const videoConstraints = useMemo(() => {
     return {
-      height: size.height - 10,
+      height: size.height,
       width: size.width,
       facingMode: "user",
       frameRate: {
@@ -53,35 +36,40 @@ function App() {
     };
   }, [size]);
 
-  async function loadModel() {
-    try {
-      const MoveNet = poseDetection.SupportedModels.MoveNet;
-      const detector = await poseDetection.createDetector(MoveNet);
-      setModel(detector);
-    } catch (error) {}
-  }
 
-  useEffect(() => {
-    tf.ready().then(() => {
-      loadModel();
-    });
-  }, []);
-
-  async function predictionFunction() {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const predictionFunction = async () => {
     if (!model || !videoRef || !videoRef.current) return;
-    //Start prediction
     try {
-      const videoPredictions = await model.estimatePoses(
-        //document.getElementById("img")
-        videoRef.current
-      );
+      const videoPredictions = await model.estimatePoses(videoRef.current);
       setPredictions(videoPredictions);
     } catch (error) {
       console.error(error);
     }
   }
 
-  useInterval(predictionFunction, 50)
+  useEffect(() => {
+    const animation = requestAnimationFrame(predictionFunction);
+    return () => cancelAnimationFrame(animation);
+  }, [predictionFunction]);
+
+  const bodyMap =
+    useMemo(() => bodyMapper(predictions?.[0]?.keypoints), [predictions]) || {};
+  const {
+    nose,
+    leftShoulder,
+    rightShoulder,
+    leftElbow,
+    rightElbow,
+    leftHip,
+    rightHip,
+    leftKnee,
+    rightKnee,
+    leftAnkle,
+    rightAnkle,
+    rightWrist,
+    leftWrist,
+  } = bodyMap;
 
   return (
     <>
@@ -94,6 +82,7 @@ function App() {
           width: videoRef?.current?.getBoundingClientRect().width,
           height: videoRef?.current?.getBoundingClientRect().height,
           zIndex: 2,
+          background: "black",
         }}
       >
         {Array.isArray(predictions?.[0]?.keypoints) && (
@@ -102,44 +91,42 @@ function App() {
             height={videoRef?.current?.getBoundingClientRect().height}
           >
             <Layer>
-              {predictions?.[0]?.keypoints.map(({ x, y }) => (
-                <Circle
-                  key={x + y + "b"}
-                  x={x}
-                  y={y}
-                  width={10}
-                  height={10}
-                  fill={"rgba(0,0,0,.5)"}
-                />
-              ))}
+              <Line
+                tension={0}
+                points={[
+                  ...rightWrist,
+                  ...rightElbow,
+                  ...rightShoulder,
+                  ...leftShoulder,
+                  ...leftElbow,
+                  ...leftWrist,
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
+
+              <Line
+                points={[
+                  ...rightShoulder,
+                  ...rightHip,
+                  ...rightKnee,
+                  ...rightAnkle,
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
+
+              <Line
+                points={[
+                  ...leftShoulder,
+                  ...leftHip,
+                  ...leftKnee,
+                  ...leftAnkle,
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
             </Layer>
-            <Layer>
-              {predictions?.[0]?.keypoints.map(({ x, y }) => (
-                <Circle
-                  key={x + y + "a"}
-                  x={x}
-                  y={y}
-                  width={5}
-                  height={5}
-                  fill={"white"}
-                  onClick={() => alert("clicked")}
-                />
-              ))}
-            </Layer>
-            {
-              <Layer>
-                <Line
-                  points={Array.from(predictions?.[0]?.keypoints, (d) => [
-                    d.x,
-                    d.y,
-                  ]).flat()}
-                  width={20}
-                  height={20}
-                  stroke={"red"}
-                  strokeWidth={1}
-                />
-              </Layer>
-            }
           </Stage>
         )}
       </div>
@@ -168,11 +155,11 @@ function App() {
 export default App;
 
 const VideoContainer = styled.div`
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-`
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+`;
