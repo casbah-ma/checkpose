@@ -2,24 +2,53 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-import styled from "styled-components";
+import { Stage, Layer, Line, Circle } from "react-konva";
+//import styled from "styled-components";
 import useWindowSize from "./hooks/useWindowSize";
 import useTimeout from "./hooks/useTimeout";
+
+/* The map from joint index to joint:
+* 0 : neck; 1 & 2 : eyes; 3 & 4 : ears
+* 5 & 6 : shoulders; 7 & 8 : elbows; 9 & 10 : hands
+* 11 & 12 : hips; 13 & 14 : knees;
+* 15 & 16 : feet
+
+   const leftShoulder = poses[0].keypoints.find(
+        (k) => k.name === "left_shoulder"
+      );
+      const rightShoulder = poses[0].keypoints.find(
+        (k) => k.name === "right_shoulder"
+      );
+      const leftElbow = poses[0].keypoints.find((k) => k.name === "left_elbow");
+      const rightElbow = poses[0].keypoints.find(
+        (k) => k.name === "right_elbow"
+      );
+      const leftHip = poses[0].keypoints.find((k) => k.name === "left_hip");
+      const rightHip = poses[0].keypoints.find((k) => k.name === "right_hip");
+      const leftKnee = poses[0].keypoints.find((k) => k.name === "left_knee");
+      const rightKnee = poses[0].keypoints.find((k) => k.name === "right_knee");
+      const leftAnkle = poses[0].keypoints.find((k) => k.name === "left_ankle");
+      const rightAnkle = poses[0].keypoints.find(
+        (k) => k.name === "right_ankle"
+      );
+
+
+*/
 
 function App() {
   const size = useWindowSize();
   const [model, setModel] = useState(null);
   const [predictions, setPredictions] = useState(null);
-  const [mediaIsReady, setMediaIsReady] = useState(false);
   const webcamRef = useRef(null);
+  const videoRef = useRef(null);
 
   const videoConstraints = useMemo(() => {
     return {
-      height: size.height,
+      height: size.height - 10,
       width: size.width,
       facingMode: "user",
       frameRate: {
-        ideal: 10,
+        ideal: 8,
       },
     };
   }, [size]);
@@ -39,15 +68,15 @@ function App() {
   }, []);
 
   async function predictionFunction() {
-    if (!model || !mediaIsReady) return;
+    if (!model && videoRef && videoRef.current) return;
     //Start prediction
     try {
       const videoPredictions = await model.estimatePoses(
-        document.getElementById("img")
+        //document.getElementById("img")
+        videoRef.current
       );
       setPredictions(videoPredictions);
-      setTimeout(() => predictionFunction(), 500
-      )
+      setTimeout(() => predictionFunction(), 20);
     } catch (error) {
       console.error(error);
     }
@@ -58,91 +87,96 @@ function App() {
   }, 1000);
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-        position: "relative",
-        height: "100vh",
-        overflow: "hidden",
-      }}
-    >
-      {
-        predictions?.[0]?.keypoints[0] && <>
-          <Noise top={predictions?.[0]?.keypoints[0].y} right={predictions?.[0]?.keypoints[0].x} />
-          <Noise top={predictions?.[0]?.keypoints[1].y} right={predictions?.[0]?.keypoints[1].x} />
-          <Noise top={predictions?.[0]?.keypoints[2].y} right={predictions?.[0]?.keypoints[2].x} />
-          <Noise top={predictions?.[0]?.keypoints[3].y} right={predictions?.[0]?.keypoints[3].x} />
-          <Noise top={predictions?.[0]?.keypoints[4].y} right={predictions?.[0]?.keypoints[4].x} />
-
-          <Noise top={predictions?.[0]?.keypoints[5].y} right={predictions?.[0]?.keypoints[5].x} />
-          <Noise top={predictions?.[0]?.keypoints[6].y} right={predictions?.[0]?.keypoints[6].x} />
-          <Noise top={predictions?.[0]?.keypoints[7].y} right={predictions?.[0]?.keypoints[7].x} />
-          <Noise top={predictions?.[0]?.keypoints[8].y} right={predictions?.[0]?.keypoints[8].x} />
-
-          <Noise top={predictions?.[0]?.keypoints[9].y} right={predictions?.[0]?.keypoints[9].x} />
-          <Noise top={predictions?.[0]?.keypoints[10].y} right={predictions?.[0]?.keypoints[10].x} />
-          <Noise top={predictions?.[0]?.keypoints[11].y} right={predictions?.[0]?.keypoints[11].x} />
-          <Noise top={predictions?.[0]?.keypoints[12].y} right={predictions?.[0]?.keypoints[12].x} />
-
-          <Noise top={predictions?.[0]?.keypoints[13].y} right={predictions?.[0]?.keypoints[13].x} />
-          <Noise top={predictions?.[0]?.keypoints[14].y} right={predictions?.[0]?.keypoints[14].x} />
-          <Noise top={predictions?.[0]?.keypoints[15].y} right={predictions?.[0]?.keypoints[15].x} />
-          <Noise top={predictions?.[0]?.keypoints[16].y} right={predictions?.[0]?.keypoints[16].x} />
-        
-        </>
-      }
-   
+    <>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          left: 0,
+          width: videoRef?.current?.getBoundingClientRect().width,
+          height: videoRef?.current?.getBoundingClientRect().height,
+          zIndex: 2,
+        }}
+      >
+        {Array.isArray(predictions?.[0]?.keypoints) && (
+          <Stage
+            width={videoRef?.current?.getBoundingClientRect().width}
+            height={videoRef?.current?.getBoundingClientRect().height}
+          >
+            <Layer>
+              {predictions?.[0]?.keypoints.map(({ x, y }) => (
+                <Circle
+                  key={x + y + "b"}
+                  x={x}
+                  y={y}
+                  width={10}
+                  height={10}
+                  fill={"rgba(0,0,0,.5)"}
+                />
+              ))}
+            </Layer>
+            <Layer>
+              {predictions?.[0]?.keypoints.map(({ x, y }) => (
+                <Circle
+                  key={x + y + "a"}
+                  x={x}
+                  y={y}
+                  width={5}
+                  height={5}
+                  fill={"white"}
+                  onClick={() => alert("clicked")}
+                />
+              ))}
+            </Layer>
+            {
+              <Layer>
+                <Line
+                  points={Array.from(predictions?.[0]?.keypoints, (d) => [
+                    d.x,
+                    d.y,
+                  ]).flat().splice(10)}
+                  width={20}
+                  height={20}
+                  stroke={"red"}
+                  strokeWidth={1}
+                />
+              </Layer>
+            }
+          </Stage>
+        )}
+      </div>
 
       <div
         style={{
           position: "fixed",
-          bottom: 0,
-          zIndex: 999999,
-          background:"rgba(255,255,255,.5)",
-        }}
-      >
-        {mediaIsReady && "media"}
-        {JSON.stringify(predictions?.[0]?.keypoints.length)}
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
           top: 0,
           right: 0,
           left: 0,
-       
-          
+          width: size.width,
+          height: size.height,
+          zIndex: 1,
+          opacity: 0.3,
         }}
       >
-        {videoConstraints?.height && (
+        <video controls id="demo-vid" autoPlay muted ref={videoRef}>
+          <source src="/demo.mp4#t=20" type="video/mp4" />
+        </video>
+
+        {videoConstraints?.height && false && (
           <Webcam
             audio={false}
             id="img"
             ref={webcamRef}
-            onUserMedia={() => setMediaIsReady(true)}
             screenshotQuality={1}
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
             mirrored
-           
           />
         )}
       </div>
-    </div>
+    </>
   );
 }
 
 export default App;
-
-const Noise = styled.div`
-  text-align:center;
-  position:fixed;
-  z-index:999999;
-  width:20px;
-  height:20px;
-  background-color:black ;
-  border-radius:50% ;
-  top:${props=>props.top+'px'};
-  right:${props=>props.right+'px'};
-`
