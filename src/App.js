@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
@@ -11,7 +11,7 @@ import videoConstraints from "./constants/videoConstraints";
 
 const LINE_COLOR = "orange";
 const LINE_WIDTH = 4;
-const MIN_SCORE = 0.55;
+const MIN_SCORE = 0.49;
 
 function App() {
   const [model, setModel] = useState(null);
@@ -84,27 +84,22 @@ function App() {
 
   return (
     <>
-       {
-        !Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛ Chargement...</SystemMsg>
-      }
+       
       {
-        !showCanvas && Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⚠️ Corriger votre position</SystemMsg>
+        !showCanvas && Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⚠️ Corriger votre position devant la camera</SystemMsg>
       }
 
-      <Dot error={!showCanvas} />
-     
-     
       <FixedContainer
         style={{
           zIndex: 2,
-          background: "rgba(20,10,85,.95)",
+          background: "rgba(20,10,85,.99)",
         }}
       >
        
         {Array.isArray(predictions?.[0]?.keypoints)  && (
           <Stage width={videoConstraints.width} height={videoConstraints.height}>
             <Layer>
-              <Circle radius={70} x={nose[0]} y={nose[1]} fill={LINE_COLOR} />
+              <Circle radius={100} x={nose[0]} y={nose[1]} stroke={LINE_COLOR} strokeWidth={30} />
             </Layer>
             <Layer>
               <Line
@@ -142,12 +137,20 @@ function App() {
                 stroke={LINE_COLOR}
                 strokeWidth={LINE_WIDTH}
               />
+                <Line
+                points={[
+               
+                  ...leftHip,...rightHip
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
             </Layer>
           </Stage>
         )}
       </FixedContainer>
 
-      <FixedContainer opacity="0">
+      <FixedContainer >
         <Webcam
           onUserMedia={() => handleMediaReady()}
           audio={false}
@@ -175,50 +178,18 @@ const FixedContainer = styled.div`
   transform: translate(-50%, 0) scale(-1, 1);
   z-index: 1;
   box-shadow: inset rgb(0 0 0 / 40%) 11px -12px 20px 20px;
+  border:10px solid white;
 `;
 
-const SideBar = styled.div`
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 200px;
-  height: calc(100% );
-  z-index: 3;
-  background-color: #050312;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column ;
-  z-index:8;
-  h1 {
-    font-size: 1.9em;
-    font-weight:100;
-    color: white;
-    margin:0;
-    border-bottom:1px dashed rgba(255,255,255,.8) ;
-  }
-`;
-
-const Item = styled.div`
-
-`
-const Dot = styled.div`
-  position: fixed ;
-  top:0;
-  left:0;
-  width: 100%;
-  height: 2px;
-  z-index:9;
-  background-color: ${props=>props.error ? 'red' : 'green'} ;
-`
 
 const SystemMsg =  styled.div`
-  position: fixed ;
-  top:10px;
-  left:0;
-  width: 100%;
+  position: fixed;
+  transform: translate(-50%, 0);
+  width: ${videoConstraints.width + 'px'};
+  left: 50%;
+  top: 10px;
+  text-align: center ;
   height: 200px;
-  z-index:90;
-  color:white
+  z-index: 90;
+  color: white;
 `
