@@ -7,10 +7,7 @@ import loadMoveNet from "./lib/loadMoveNet";
 import bodyMapper from "./lib/bodyMap";
 import useTimeout from "./hooks/useTimeout";
 import videoConstraints from "./constants/videoConstraints";
-
-const LINE_COLOR = "orange";
-const LINE_WIDTH = 4;
-const MIN_SCORE = 0.49;
+import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, REALY_MIN_SCORE} from './constants/config'
 
 function App() {
   const [model, setModel] = useState(null);
@@ -72,7 +69,7 @@ function App() {
     if (score < MIN_SCORE) {
       setShowCanvas(false);
     }
-    /*add a penality to avoid fast changes*/
+    /*to avoid fast changes, add a penality*/
     if (score >= MIN_SCORE + 0.05) {
       setShowCanvas(true);
     }
@@ -81,64 +78,78 @@ function App() {
   return (
     <>
       {!showCanvas && Array.isArray(predictions?.[0]?.keypoints) && (
-        <SystemMsg>⚠️ Corriger votre position devant la camera</SystemMsg>
+        <SystemMsg>⚠️ Reculez Un peu.</SystemMsg>
       )}
 
-      {!Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛</SystemMsg>}
+      {!Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛ Waiting for Camera</SystemMsg>}
 
-      <FixedContainer zIndex={2} background={"rgba(20,10,85,.99)"}>
+      <FixedContainer zIndex={2} background={"#000000fc"}>
         {Array.isArray(predictions?.[0]?.keypoints) && (
           <Stage
             width={videoRef.current.video.clientWidth}
             height={videoRef.current.video.clientHeight}
           >
             <Layer>
-              <Circle
+              {
+                nose.score >= REALY_MIN_SCORE &&  <Circle
                 radius={80}
-                x={nose[0]}
-                y={nose[1]}
+                x={nose.coords[0]}
+                y={nose.coords[1]}
                 stroke={LINE_COLOR}
                 strokeWidth={5}
               />
+              }
+             
             </Layer>
             <Layer>
-              <Line
+        
+                <Line
                 tension={0.25}
                 points={[
-                  ...rightWrist,
-                  ...rightElbow,
-                  ...rightShoulder,
-                  ...leftShoulder,
-                  ...leftElbow,
-                  ...leftWrist,
+                  ...rightWrist.coords,
+                  ...rightElbow.coords,
+                  ...rightShoulder.coords,
+                  ...leftShoulder.coords,
+                  ...leftElbow.coords,
+                  ...leftWrist.coords,
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
+            
+              
+              {
+                rightKnee.score >= REALY_MIN_SCORE && rightAnkle.score >= REALY_MIN_SCORE && 
+                <Line
+                tension={0.25}
+                points={[
+                  ...rightShoulder.coords,
+                  ...rightHip.coords,
+                  ...rightKnee.coords,
+                  ...rightAnkle.coords,
                 ]}
                 stroke={LINE_COLOR}
                 strokeWidth={LINE_WIDTH}
               />
 
+              }
+              
+              {
+                 leftKnee.score >= REALY_MIN_SCORE && leftAnkle.score >= REALY_MIN_SCORE &&  <Line
+                 tension={0.25}
+                 points={[
+                   ...leftShoulder.coords,
+                   ...leftHip.coords,
+                   ...leftKnee.coords,
+                   ...leftAnkle.coords,
+                 ]}
+                 stroke={LINE_COLOR}
+                 strokeWidth={LINE_WIDTH}
+               />
+              }
               <Line
-                points={[
-                  ...rightShoulder,
-                  ...rightHip,
-                  ...rightKnee,
-                  ...rightAnkle,
-                ]}
-                stroke={LINE_COLOR}
-                strokeWidth={LINE_WIDTH}
-              />
-
-              <Line
-                points={[
-                  ...leftShoulder,
-                  ...leftHip,
-                  ...leftKnee,
-                  ...leftAnkle,
-                ]}
-                stroke={LINE_COLOR}
-                strokeWidth={LINE_WIDTH}
-              />
-              <Line
-                points={[...leftHip, ...rightHip]}
+                tension={0.25}
+                points={[...leftHip.coords, ...rightHip.coords]}
                 stroke={LINE_COLOR}
                 strokeWidth={LINE_WIDTH}
               />
@@ -147,7 +158,7 @@ function App() {
         )}
       </FixedContainer>
 
-      <FixedContainer>
+      <FixedContainer zIndex={-1}>
         <Webcam
           onUserMedia={() => handleMediaReady()}
           audio={false}
@@ -166,16 +177,15 @@ export default App;
 
 const FixedContainer = styled.div`
   position: fixed;
-  top: 10px;
+  top:0;
   right: 0;
   width: ${videoConstraints.width + "px"};
-  height: ${videoConstraints.height + "px"};
+  height: 100%;
   left: 50%;
   transform: translate(-50%, 0) scale(-1, 1);
   z-index: ${(props) => props.zIndex || 1};
   background: ${(props) => props.background};
   box-shadow: inset rgb(0 0 0 / 40%) 11px -12px 20px 20px;
-  border: 10px solid white;
 `;
 
 const SystemMsg = styled.div`

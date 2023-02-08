@@ -39,6 +39,8 @@ export default function bodyMap(keypoints) {
 }
 
 function toArray({ x, y, score }) {
-    //if(score)
-    return [x, y]
+    return {
+        coords: [x, y],
+        score
+    }
 }
