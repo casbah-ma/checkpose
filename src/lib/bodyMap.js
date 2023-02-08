@@ -38,6 +38,7 @@ export default function bodyMap(keypoints) {
     };
 }
 
-function toArray({ x, y }) {
+function toArray({ x, y, score }) {
+    //if(score)
     return [x, y]
 }
