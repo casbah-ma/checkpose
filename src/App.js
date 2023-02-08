@@ -77,13 +77,9 @@ function App() {
 
   return (
     <>
-      {!showCanvas && Array.isArray(predictions?.[0]?.keypoints) && (
-        <SystemMsg>⚠️ Reculez Un peu.</SystemMsg>
-      )}
-
       {!Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛ Waiting for Camera</SystemMsg>}
 
-      <FixedContainer zIndex={2} background={"#000000fc"}>
+      <FixedContainer zIndex={2} background={"#000000"}>
         {Array.isArray(predictions?.[0]?.keypoints) && (
           <Stage
             width={videoRef.current.video.clientWidth}
@@ -178,6 +174,7 @@ export default App;
 const FixedContainer = styled.div`
   position: fixed;
   top:0;
+  bottom:0;
   right: 0;
   width: ${videoConstraints.width + "px"};
   height: 100%;

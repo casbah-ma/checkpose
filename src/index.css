@@ -9,5 +9,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
+  background-color: #020202;
+}
+
+video {
+  width: 100%    !important;
+  height: auto   !important;
 }
