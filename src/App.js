@@ -7,16 +7,14 @@ import loadMoveNet from "./lib/loadMoveNet";
 import bodyMapper from "./lib/bodyMap";
 import useTimeout from "./hooks/useTimeout";
 import videoConstraints from "./constants/videoConstraints";
-import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, REALY_MIN_SCORE} from './constants/config'
+import {LINE_COLOR, LINE_WIDTH, MIN_SCORE} from './constants/config'
 
 function App() {
   const [model, setModel] = useState(null);
   const [predictions, setPredictions] = useState(null);
-  const [showCanvas, setShowCanvas] = useState(false);
   const [streamReady, setStreamReady] = useState(false);
-  const [score, setScore] = useState(null);
   const videoRef = useRef(null);
-  const handleMediaReady = useTimeout(() => setStreamReady(true), 1000);
+  const handleMediaReady = useTimeout(() => setStreamReady(true), 500);
   const bodyMap =
     useMemo(() => bodyMapper(predictions?.[0]?.keypoints), [predictions]) || {};
 
@@ -47,7 +45,6 @@ function App() {
           videoRef.current.video
         );
         setPredictions(videoPredictions);
-        setScore(videoPredictions[0]?.score * 1);
       } catch (error) {
         console.error(error);
       }
@@ -65,19 +62,11 @@ function App() {
     return () => cancelAnimationFrame(animation);
   }, [predictionFunction]);
 
-  useEffect(() => {
-    if (score < MIN_SCORE) {
-      setShowCanvas(false);
-    }
-    /*to avoid fast changes, add a penality*/
-    if (score >= MIN_SCORE + 0.05) {
-      setShowCanvas(true);
-    }
-  }, [score]);
+
 
   return (
     <>
-      {!Array.isArray(predictions?.[0]?.keypoints) && <SystemMsg>⌛ Waiting for Camera</SystemMsg>}
+      {(!Array.isArray(predictions?.[0]?.keypoints) || !model) && <SystemMsg>❌ Camera</SystemMsg>}
 
       <FixedContainer zIndex={2} background={"#000000"}>
         {Array.isArray(predictions?.[0]?.keypoints) && (
@@ -87,7 +76,7 @@ function App() {
           >
             <Layer>
               {
-                nose.score >= REALY_MIN_SCORE &&  <Circle
+                nose.score >= MIN_SCORE &&  <Circle
                 radius={80}
                 x={nose.coords[0]}
                 y={nose.coords[1]}
@@ -115,7 +104,7 @@ function App() {
             
               
               {
-                rightKnee.score >= REALY_MIN_SCORE && rightAnkle.score >= REALY_MIN_SCORE && 
+                rightKnee.score >= MIN_SCORE && rightAnkle.score >= MIN_SCORE && 
                 <Line
                 tension={0.25}
                 points={[
@@ -131,7 +120,7 @@ function App() {
               }
               
               {
-                 leftKnee.score >= REALY_MIN_SCORE && leftAnkle.score >= REALY_MIN_SCORE &&  <Line
+                 leftKnee.score >= MIN_SCORE && leftAnkle.score >= MIN_SCORE &&  <Line
                  tension={0.25}
                  points={[
                    ...leftShoulder.coords,
@@ -188,7 +177,7 @@ const FixedContainer = styled.div`
 const SystemMsg = styled.div`
   position: fixed;
   transform: translate(-50%, 0);
-  width: ${videoConstraints.width + "px"};
+  width: 100%;
   left: 50%;
   top: 100px;
   text-align: center;
