@@ -1,4 +1,14 @@
-export default function findAngle(A,B,C) {
+/**
+ * 
+ * @param {Array} A 
+ * @param {Array} B 
+ * @param {Array} C 
+ * @returns {String} 
+ * @example 
+ * 
+ * const Angledegree = findAngle([1,2],[5,6], [0,3])
+ */
+export default function findAngle(A, B, C) {
     var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    
     var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2)); 
     var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
