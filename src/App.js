@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-import { Stage, Layer, Line, Circle } from "react-konva";
+import { Stage, Layer, Line } from "react-konva";
 import styled from "styled-components";
 import loadMoveNet from "./lib/loadMoveNet";
 import bodyMapper from "./lib/bodyMap";
 import useTimeout from "./hooks/useTimeout";
 import videoConstraints from "./constants/videoConstraints";
-import {LINE_COLOR, LINE_WIDTH, MIN_SCORE} from './constants/config'
+import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION} from './constants/config'
 
 function App() {
   const [model, setModel] = useState(null);
@@ -19,7 +19,6 @@ function App() {
     useMemo(() => bodyMapper(predictions?.[0]?.keypoints), [predictions]) || {};
 
   const {
-    nose,
     leftShoulder,
     rightShoulder,
     leftElbow,
@@ -66,30 +65,21 @@ function App() {
 
   return (
     <>
-      {(!Array.isArray(predictions?.[0]?.keypoints) || !model) && <SystemMsg>❌ Camera</SystemMsg>}
+      {(!predictions?.[0]?.keypoints?.[0] || !model) && <SystemMsg>...</SystemMsg>}
 
-      <FixedContainer zIndex={2} background={"#000000"}>
+      
+      <FixedContainer zIndex={2} background={"rgba(0,0,0,.98)"}>
+      <Mirrored>
         {Array.isArray(predictions?.[0]?.keypoints) && (
           <Stage
             width={videoRef.current.video.clientWidth}
             height={videoRef.current.video.clientHeight}
           >
-            <Layer>
-              {
-                nose.score >= MIN_SCORE &&  <Circle
-                radius={80}
-                x={nose.coords[0]}
-                y={nose.coords[1]}
-                stroke={LINE_COLOR}
-                strokeWidth={5}
-              />
-              }
-             
-            </Layer>
+           
             <Layer>
         
                 <Line
-                tension={0.25}
+                tension={TENSION}
                 points={[
                   ...rightWrist.coords,
                   ...rightElbow.coords,
@@ -106,7 +96,7 @@ function App() {
               {
                 rightKnee.score >= MIN_SCORE && rightAnkle.score >= MIN_SCORE && 
                 <Line
-                tension={0.25}
+                tension={TENSION}
                 points={[
                   ...rightShoulder.coords,
                   ...rightHip.coords,
@@ -121,7 +111,7 @@ function App() {
               
               {
                  leftKnee.score >= MIN_SCORE && leftAnkle.score >= MIN_SCORE &&  <Line
-                 tension={0.25}
+                 tension={TENSION}
                  points={[
                    ...leftShoulder.coords,
                    ...leftHip.coords,
@@ -133,25 +123,26 @@ function App() {
                />
               }
               <Line
-                tension={0.25}
+                tension={TENSION}
                 points={[...leftHip.coords, ...rightHip.coords]}
                 stroke={LINE_COLOR}
                 strokeWidth={LINE_WIDTH}
               />
             </Layer>
           </Stage>
-        )}
+          )}
+          </Mirrored>
       </FixedContainer>
-
+      
       <FixedContainer zIndex={-1}>
         <Webcam
           onUserMedia={() => handleMediaReady()}
           audio={false}
-          id="mywebcam"
           ref={videoRef}
           screenshotQuality={1}
           screenshotFormat="image/jpeg"
           videoConstraints={videoConstraints}
+          mirrored
         />
       </FixedContainer>
     </>
@@ -186,3 +177,7 @@ const SystemMsg = styled.div`
   color: white;
   font-size: 2.5em;
 `;
+
+const Mirrored = styled.div`
+transform: scale(-1, 1);
+`
