@@ -3,11 +3,11 @@ import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
 import { Stage, Layer, Line } from "react-konva";
 import styled from "styled-components";
-import loadMoveNet from "./lib/loadMoveNet";
-import bodyMapper from "./lib/bodyMap";
-import useTimeout from "./hooks/useTimeout";
-import videoConstraints from "./constants/videoConstraints";
-import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION} from './constants/config'
+import loadMoveNet from "lib/loadMoveNet";
+import bodyMapper from "lib/bodyMap";
+import useTimeout from "hooks/useTimeout";
+import videoConstraints from "constants/videoConstraints";
+import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION} from 'constants/config'
 
 function App() {
   const [model, setModel] = useState(null);
