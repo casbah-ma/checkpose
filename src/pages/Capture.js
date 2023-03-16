@@ -33,6 +33,7 @@ const WebcamStreamCapture = () => {
   const handleStartCaptureClick = useCallback(() => {
     setCapturing(true);
     setPlaying(true);
+    setPlayBackRate(1);
     reset();
     start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
@@ -57,7 +58,6 @@ const WebcamStreamCapture = () => {
     pause();
     setCapturing(false);
     setPlaying(false);
-    setPlayBackRate(1);
   }, [mediaRecorderRef, setCapturing, pause]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const WebcamStreamCapture = () => {
     }
   }, [recordedChunks]);
 
-  console.log(playbackRate);
+  console.log(playbackRate)
 
   return (
     <>
@@ -92,9 +92,10 @@ const WebcamStreamCapture = () => {
 
       <WebCamContainer invisible={capturing}>
         <VideoComponent id="video" autoPlay playsinline loop ref={playerRef} controls />
-        <Slider
+        {
+          !capturing &&  <Slider
           barStyle={{"borderRadius": 0}}
-          value={playbackRate===1 ? 100 : playbackRate}
+          value={playbackRate*1===1 ? 100 : playbackRate}
           onChange={(value) => setPlayBackRate(value / 100)}
           min={10}
           max={100}
@@ -102,6 +103,8 @@ const WebcamStreamCapture = () => {
           disabled={capturing || playing}
           shouldDisplayValue={false} 
         />
+        }
+       
        
       </WebCamContainer>
 
