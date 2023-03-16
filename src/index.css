@@ -10,8 +10,3 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-video {
-  width: 100%    !important;
-  height: auto   !important;
-}
