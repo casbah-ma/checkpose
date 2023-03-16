@@ -1,15 +1,26 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Webcam from "react-webcam";
-import videoConstraints from "constants/videoConstraints";
+import { useTimer } from "use-timer";
+import Slider from "react-smooth-range-input";
+//import videoConstraints from "constants/videoConstraints";
 
 const WebcamStreamCapture = () => {
+  const { time, start, pause, reset } = useTimer();
   const webcamRef = useRef(null);
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const [capturing, setCapturing] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [recordedChunks, setRecordedChunks] = useState([]);
-  
+  const [playbackRate, setPlayBackRate] = useState(1);
+
+  useEffect(() => {
+    if (playerRef?.current?.playbackRate) {
+      playerRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
   const handleDataAvailable = useCallback(
     ({ data }) => {
       if (data.size > 0) {
@@ -21,6 +32,9 @@ const WebcamStreamCapture = () => {
 
   const handleStartCaptureClick = useCallback(() => {
     setCapturing(true);
+    setPlaying(true);
+    reset();
+    start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
     });
@@ -29,13 +43,22 @@ const WebcamStreamCapture = () => {
       handleDataAvailable
     );
     mediaRecorderRef.current.start();
-  }, [webcamRef, setCapturing, mediaRecorderRef, handleDataAvailable]);
+  }, [
+    webcamRef,
+    setCapturing,
+    mediaRecorderRef,
+    handleDataAvailable,
+    start,
+    reset,
+  ]);
 
   const handleStopCaptureClick = useCallback(() => {
     mediaRecorderRef?.current?.stop();
+    pause();
     setCapturing(false);
-
-  }, [mediaRecorderRef, setCapturing]);
+    setPlaying(false);
+    setPlayBackRate(1);
+  }, [mediaRecorderRef, setCapturing, pause]);
 
   useEffect(() => {
     if (recordedChunks.length) {
@@ -57,23 +80,39 @@ const WebcamStreamCapture = () => {
 
       setRecordedChunks([]);
     }
-  },[recordedChunks])
+  }, [recordedChunks]);
+
+  console.log(playbackRate);
 
   return (
     <>
-      <WebCamContainer invisible={ !capturing }>
+      <WebCamContainer invisible={!playing}>
         <Webcam audio={false} ref={webcamRef} />
       </WebCamContainer>
 
-      <WebCamContainer invisible={ capturing }>
-        <VideoComponent id="video" autoPlay playsinline loop controls ref={playerRef}/>
+      <WebCamContainer invisible={capturing}>
+        <VideoComponent id="video" autoPlay playsinline loop ref={playerRef} controls />
+        <Slider
+          barStyle={{"borderRadius": 0}}
+          value={playbackRate===1 ? 100 : playbackRate}
+          onChange={(value) => setPlayBackRate(value / 100)}
+          min={10}
+          max={100}
+          barColor={"#e1dada"}
+          disabled={capturing || playing}
+          shouldDisplayValue={false} 
+        />
+       
       </WebCamContainer>
 
       <ButtonContainer zIndex={99}>
         {capturing ? (
-          <button onClick={handleStopCaptureClick}>Stop Capture</button>
+          <>
+            {" "}
+            <Button onClick={handleStopCaptureClick}>{time}</Button>
+          </>
         ) : (
-          <button onClick={handleStartCaptureClick}>Start Capture</button>
+          <Button onClick={handleStartCaptureClick}>New</Button>
         )}
       </ButtonContainer>
     </>
@@ -84,27 +123,35 @@ export default WebcamStreamCapture;
 
 const ButtonContainer = styled.div`
   position: fixed;
-  top: 0;
-  bottom: 0;
+  bottom: 65px;
   right: 0;
-  width: ${videoConstraints.width + "px"};
-  height: 100%;
-  left: 50%;
+  width: 100vw;
+  text-align: center;
   z-index: ${(props) => props.zIndex || 1};
   background: ${(props) => props.background};
 `;
 
+const Button = styled.button`
+  width: 110px;
+  height: ${(props) => (props.bg ? "auto" : "110px")};
+  border-radius: 50%;
+  background-color: ${(props) => props.bg || "#FC4847"};
+  font-size: 25px;
+  font-weight: 800;
+  color: ${(props) => (props.bg ? "black" : "white")};
+  text-align: center;
+`;
+
 const WebCamContainer = styled(ButtonContainer)`
-  display: ${props=>props.invisible ? "none" : "block"};
+  display: ${(props) => (props.invisible ? "none" : "block")};
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   video {
-    width: 100vw !important;
-    height: 100vh !important;
-    object-fit: cover;
+    width: 100%;
+    object-fit: contain;
   }
 `;
 

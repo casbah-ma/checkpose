@@ -7688,6 +7688,13 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
+react-flip-numbers@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-flip-numbers/-/react-flip-numbers-3.0.2.tgz#62f30a629479d75dc661acfbe7468af3965bc160"
+  integrity sha512-b79rkh8f4Bfu00dcdEtKKwKkrjaFH65xazFZHHbgKviBDnqdOTg+GlB8TaCN/APJ1LDohWNX+FSlpiSfzNMCXA==
+  dependencies:
+    react-simple-animate "3.0.2"
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -7794,6 +7801,24 @@ react-scripts@5.0.1:
     workbox-webpack-plugin "^6.4.1"
   optionalDependencies:
     fsevents "^2.3.2"
+
+react-simple-animate@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-simple-animate/-/react-simple-animate-3.0.2.tgz#67f29b0c64155d2dfd540c1c74f634ef521536a8"
+  integrity sha512-GDpznDMpIHHdH6L6AZo9nNry6Xsq7forKmd6rwigMSuxe4FS9ihK0HSC1odB4WWKbA87S8VL7EVR9JeTRVkbQA==
+
+react-simple-animate@^3.0.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/react-simple-animate/-/react-simple-animate-3.5.2.tgz#ab08865c8bd47872b92bd1e25902326bf7c695b3"
+  integrity sha512-xLE65euP920QMTOmv5haPlml+hmOPDkbIr5WeF7ADIXWBYt5kW/vwpNfWg8EKMab8aeDxIZ6QjffVh8v2dUyhg==
+
+react-smooth-range-input@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-smooth-range-input/-/react-smooth-range-input-0.3.1.tgz#afab65c119fdb1c25203662add8046abb2729af7"
+  integrity sha512-Sxx3xXBh6izSrI9e3YrHhMJ8UlX3fRwVDWp6PiKuQ3XwgUpBcxB1erRf/w7V/sOrcBLp95T89OQ+SVZIrmfEjg==
+  dependencies:
+    react-flip-numbers "3.0.2"
+    react-simple-animate "^3.0.2"
 
 react-webcam@^7.0.1:
   version "7.0.1"
@@ -8983,6 +9008,11 @@ use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
+
+use-timer@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/use-timer/-/use-timer-2.0.1.tgz#eef400a83e3fa4af9896fdd6d07d34f676e9373c"
+  integrity sha512-ESFkDYZluJZ+G/CaoOBFxg0TjuG7kgNFNhIFZhqv14ho2WIZwuxkRnEURhyLm9I4vNz+ea9ZowNaOkExDAM+6Q==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

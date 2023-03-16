@@ -10,3 +10,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+button{
+  padding: 0;
+border: none;
+background: none;
+}

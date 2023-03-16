@@ -16,8 +16,10 @@
     "react-konva": "^18.2.4",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
+    "react-smooth-range-input": "^0.3.1",
     "react-webcam": "^7.0.1",
     "styled-components": "^5.3.6",
+    "use-timer": "^2.0.1",
     "web-vitals": "^2.1.4",
     "yarn": "^1.22.19",
     "zustand": "^4.3.6"
