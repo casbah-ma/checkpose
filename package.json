@@ -6,6 +6,7 @@
     "@mediapipe/pose": "^0.5.1635988162",
     "@tensorflow-models/pose-detection": "^2.0.0",
     "@tensorflow/tfjs": "^4.2.0",
+    "@tensorflow/tfjs-backend-webgl": "^4.2.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

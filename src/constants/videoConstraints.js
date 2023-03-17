@@ -1,6 +1,6 @@
 const videoConstraints = {
     facingMode: "portrait",
-    frameRate: { max: 30 }
+    frameRate: { max: 60 }
 };
 
 export default videoConstraints

@@ -7,7 +7,7 @@
 
 export default function bodyMap(keypoints) {
     if(!Array.isArray(keypoints)) return
-    const nose = toArray(keypoints[0]);
+    const nose = toArray(keypoints.find((k) => k.name === "nose"));
     const leftShoulder = toArray(keypoints.find((k) => k.name === "left_shoulder"));
     const rightShoulder = toArray(keypoints.find((k) => k.name === "right_shoulder"));
     const leftElbow = toArray(keypoints.find((k) => k.name === "left_elbow"));
