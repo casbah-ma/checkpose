@@ -2,7 +2,7 @@ import * as poseDetection from "@tensorflow-models/pose-detection";
   
 const detectorConfig = {
   runtime: 'tfjs', // or 'tfjs'
-  modelType: 'SinglePose.Lightning', // SinglePose.Lightning,SinglePose.Thunder,MultiPose.Lightning
+  modelType: 'SinglePose.Thunder', // SinglePose.Lightning,SinglePose.Thunder,MultiPose.Lightning
 };
 
 export default async function loadMoveNet(cb) {

@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import Slider from "react-smooth-range-input";
 import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
 
