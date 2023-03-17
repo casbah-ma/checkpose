@@ -28,7 +28,7 @@ const WebcamStreamCapture = () => {
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
     try {
-      
+
       const videoPredictions = await model.estimatePoses(
         webcamRef.current.video
       );
@@ -141,6 +141,7 @@ const WebcamStreamCapture = () => {
         {capturing && (
           <AnalyzeBtnContainer>
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
+            {time > 1 && predictions.length<1 && "  ⚠️ Missing Pose "}
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
@@ -219,7 +220,7 @@ const Button = styled.button`
   }
 `;
 
-const WebCamContainer = styled(ButtonContainer)`
+export const WebCamContainer = styled(ButtonContainer)`
   display: ${(props) => (props.invisible ? "none" : "block")};
   position: absolute;
   top: 0;
