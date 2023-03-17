@@ -28,7 +28,6 @@ const WebcamStreamCapture = () => {
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
     try {
-
       const videoPredictions = await model.estimatePoses(
         webcamRef.current.video
       );
@@ -39,14 +38,13 @@ const WebcamStreamCapture = () => {
         ]);
       }
     } catch (error) {
-      //console.error(error);
+      console.log("ERROR: ", error);
     }
   };
 
   useEffect(() => {
     tf.setBackend("webgl")
       .then(() => {
-        console.log("webgl ready");
         loadMoveNet(setModel);
       })
       .catch((e) => alert("WebGL Not supported"));
@@ -106,8 +104,6 @@ const WebcamStreamCapture = () => {
     setCapturing(false);
     setPlaying(false);
   }, [mediaRecorderRef, setCapturing, pause]);
-
-  console.log(predictions.sort((a, b) => a.time - b.time));
 
   useEffect(() => {
     if (recordedChunks.length) {
@@ -169,7 +165,7 @@ const WebcamStreamCapture = () => {
 
         {predictions.length ? (
           <AnalyzeBtnContainer>
-            <Link to="/analyze" state={predictions}>
+            <Link to="/analyze" state={predictions.sort((a, b) => a.time - b.time)}>
               📈 Results
             </Link>
           </AnalyzeBtnContainer>

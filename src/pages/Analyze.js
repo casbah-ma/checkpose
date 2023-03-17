@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Stage, Layer, Line } from "react-konva";
 import Slider from "react-smooth-range-input";
@@ -6,9 +6,9 @@ import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
 import { WebCamContainer } from "./Capture";
 import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION} from 'constants/config'
-
 function Analyze() {
   const location = useLocation();
+  const canvaContainer = useRef(null);
   const predictions = location.state;
 
   const bodyMap =
@@ -28,14 +28,15 @@ function Analyze() {
     rightWrist,
     leftWrist,
   } = bodyMap;
+  
 
   return (
     <Layout scroll>
-      <WebCamContainer>
-        {Array.isArray(predictions?.[0]?.keypoints) && (
+      <h1>Analyze</h1>
+      <WebCamContainer ref={canvaContainer}>
+        {/*Array.isArray(predictions?.[0]?.keypoints) && (
           <Stage
-            width={"100%"}
-            height={"60vh"}
+  
           >
             <Layer>
               <Line
@@ -88,7 +89,7 @@ function Analyze() {
               />
             </Layer>
           </Stage>
-        )}
+                )*/}
       </WebCamContainer>
     </Layout>
   );
