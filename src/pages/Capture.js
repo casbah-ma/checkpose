@@ -1,20 +1,16 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import "@tensorflow/tfjs-backend-webgl";
 import Webcam from "react-webcam";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Slider from "react-smooth-range-input";
+import * as tf from "@tensorflow/tfjs";
+import "@tensorflow/tfjs-backend-webgl";
 import { useTimer } from "use-timer";
 import Layout from "components/Layout";
 import loadMoveNet from "lib/loadMoveNet";
 import videoConstraints from "constants/videoConstraints";
 
 const WebcamStreamCapture = () => {
-  const { time, start, pause, reset } = useTimer();
-  const [model, setModel] = useState(null);
-  const [predictions, setPredictions] = useState([]);
-  const [vidUrl, setVidUrl] = useState(null);
   const webcamRef = useRef(null);
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -22,6 +18,10 @@ const WebcamStreamCapture = () => {
   const [playing, setPlaying] = useState(true);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [playbackRate, setPlayBackRate] = useState(1);
+  const [model, setModel] = useState(null);
+  const [predictions, setPredictions] = useState([]);
+  const [vidUrl, setVidUrl] = useState(null);
+  const { time, start, pause, reset } = useTimer();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
@@ -77,7 +77,7 @@ const WebcamStreamCapture = () => {
     reset();
     setPredictions([]);
     setCapturing(true);
-    setPlaying(true);
+    setPlaying(false);
     setPlayBackRate(1);
     setVidUrl(null)
     start();
@@ -105,7 +105,7 @@ const WebcamStreamCapture = () => {
     mediaRecorderRef?.current?.stop();
     pause();
     setCapturing(false);
-    setPlaying(false);
+    setPlaying(true);
   }, [mediaRecorderRef, setCapturing, pause]);
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const WebcamStreamCapture = () => {
 
   return (
     <Layout>
-      <WebCamContainer invisible={!playing}>
+      <WebCamContainer invisible={!playing && !capturing}>
         <Webcam
           audio={false}
           ref={webcamRef}
@@ -158,7 +158,7 @@ const WebcamStreamCapture = () => {
         />
         
      
-        {!playing && (
+        {playing && (
           <Slider
             barStyle={{ borderRadius: 0, zIndex: 99999 }}
             value={playbackRate * 1 === 1 ? 100 : playbackRate}
