@@ -113,16 +113,8 @@ const WebcamStreamCapture = () => {
       const blob = new Blob(recordedChunks, {
         type: "video/webm",
       });
-
       const url = URL.createObjectURL(blob);
       setVidUrl(url)
-      //document.body.appendChild(a);
-      //a.style = "display: none";
-      //a.href = url;
-      //a.download = "react-webcam-stream-capture.webm";
-      //a.click();
-      //window.URL.revokeObjectURL(url);
-
       setRecordedChunks([]);
     }
   }, [recordedChunks]);
@@ -138,7 +130,7 @@ const WebcamStreamCapture = () => {
         {capturing && (
           <AnalyzeBtnContainer>
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
-            {time > 1 && predictions.length<1 && "  ⚠️ Missing Pose "}
+            {time > 1 && predictions.length<1 && "  ⚠️ Poses Not detected"}
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
