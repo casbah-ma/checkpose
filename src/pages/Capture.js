@@ -1,19 +1,17 @@
+import * as tf from "@tensorflow/tfjs";
+import "@tensorflow/tfjs-backend-webgl";
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Slider from "react-smooth-range-input";
-import * as tf from "@tensorflow/tfjs";
-import "@tensorflow/tfjs-backend-webgl";
 import { useTimer } from "use-timer";
-import Layout from "components/Layout";
 import loadMoveNet from "lib/loadMoveNet";
+import Layout from "components/Layout";
 import videoConstraints from "constants/videoConstraints";
 
 const WebcamStreamCapture = () => {
-  const webcamRef = useRef(null);
-  const playerRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
+  const { time, start, pause, reset } = useTimer();
   const [capturing, setCapturing] = useState(false);
   const [playing, setPlaying] = useState(true);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -21,8 +19,10 @@ const WebcamStreamCapture = () => {
   const [model, setModel] = useState(null);
   const [predictions, setPredictions] = useState([]);
   const [vidUrl, setVidUrl] = useState(null);
-  const { time, start, pause, reset } = useTimer();
-
+  const webcamRef = useRef(null);
+  const playerRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
@@ -63,6 +63,17 @@ const WebcamStreamCapture = () => {
       playerRef.current.playbackRate = playbackRate;
     }
   }, [playbackRate]);
+
+  useEffect(() => {
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, {
+        type: "video/webm",
+      });
+      const url = URL.createObjectURL(blob);
+      setVidUrl(url)
+      setRecordedChunks([]);
+    }
+  }, [recordedChunks]);
 
   const handleDataAvailable = useCallback(
     ({ data }) => {
@@ -108,17 +119,6 @@ const WebcamStreamCapture = () => {
     setPlaying(true);
   }, [mediaRecorderRef, setCapturing, pause]);
 
-  useEffect(() => {
-    if (recordedChunks.length) {
-      const blob = new Blob(recordedChunks, {
-        type: "video/webm",
-      });
-      const url = URL.createObjectURL(blob);
-      setVidUrl(url)
-      setRecordedChunks([]);
-    }
-  }, [recordedChunks]);
-
   return (
     <Layout>
       <WebCamContainer invisible={!playing && !capturing}>
@@ -134,7 +134,6 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
-
       {
         vidUrl && <WebCamContainer>
         
@@ -171,8 +170,6 @@ const WebcamStreamCapture = () => {
         ) : null}
       </WebCamContainer>
       }
-      
-
       <ButtonContainer zIndex={99}>
         {capturing ? (
           <>
@@ -232,7 +229,7 @@ export const WebCamContainer = styled(ButtonContainer)`
 `;
 
 const VideoComponent = styled.video`
-  z-index: 999999
+  z-index: 999999;
 `;
 
 const AnalyzeBtnContainer = styled.div`

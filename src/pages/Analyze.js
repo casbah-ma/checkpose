@@ -1,19 +1,18 @@
-import React, { useMemo, useRef } from "react";
+import React, { useRef, useState } from "react";
+import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { Stage, Layer, Line } from "react-konva";
-import Slider from "react-smooth-range-input";
+//import Slider from "react-smooth-range-input";
 import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
-import { WebCamContainer } from "./Capture";
-import {LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION} from 'constants/config'
+import { LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION } from 'constants/config'
+
 function Analyze() {
+  const [frame, setFrame]= useState(5)
   const location = useLocation();
   const canvaContainer = useRef(null);
   const predictions = location.state;
-
-  const bodyMap =
-    useMemo(() => bodyMapper(predictions?.[0]?.keypoints), [predictions]) || {};
-
+  
   const {
     leftShoulder,
     rightShoulder,
@@ -27,18 +26,15 @@ function Analyze() {
     rightAnkle,
     rightWrist,
     leftWrist,
-  } = bodyMap;
+  } = bodyMapper(predictions?.[frame]?.keypoints);
   
-
+  //console.log(predictions?.[frame]?.keypoints)
+  
   return (
     <Layout scroll>
-      <h1>Analyze</h1>
-      <div>{ JSON.stringify(predictions) }</div>
-      <WebCamContainer ref={canvaContainer}>
-        {/*Array.isArray(predictions?.[0]?.keypoints) && (
-          <Stage
-  
-          >
+      <Container ref={canvaContainer}>
+        {Array.isArray(predictions?.[frame]?.keypoints)  && (
+          <Stage  width={canvaContainer?.current?.clientWidth || window.innerWidth} height={window.innerHeight*.6}>
             <Layer>
               <Line
                 tension={TENSION}
@@ -90,10 +86,22 @@ function Analyze() {
               />
             </Layer>
           </Stage>
-                )*/}
-      </WebCamContainer>
+                )}
+      </Container>
+
+      <h1>Analyze</h1>
+      <div>{ JSON.stringify(predictions) }</div>
+      
     </Layout>
   );
 }
 
 export default Analyze;
+
+const Container = styled.div`
+  text-align: center;
+  z-index: ${(props) => props.zIndex || 1};
+  width: 100%;
+  min-width:100% ;
+  height: 60vh !important;
+`;
