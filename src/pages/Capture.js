@@ -1,6 +1,6 @@
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
-import React, { useState, useCallback, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -14,6 +14,7 @@ const WebcamStreamCapture = () => {
   const { time, start, pause, reset } = useTimer();
   const [model, setModel] = useState(null);
   const [predictions, setPredictions] = useState([]);
+  const [vidUrl, setVidUrl] = useState(null);
   const webcamRef = useRef(null);
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -22,8 +23,6 @@ const WebcamStreamCapture = () => {
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [playbackRate, setPlayBackRate] = useState(1);
 
-  // useCallback and useMemo are not working here
-  // Refactor
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
@@ -38,7 +37,7 @@ const WebcamStreamCapture = () => {
         ]);
       }
     } catch (error) {
-      console.log("ERROR: ", error);
+      console.error("predictionFunction()\n\n", error);
     }
   };
 
@@ -54,7 +53,7 @@ const WebcamStreamCapture = () => {
     //const animation = requestAnimationFrame(predictionFunction);
     //return () => cancelAnimationFrame(animation);
 
-    // 5 frames per second
+    // 5 frames per second approx
     const animation = setInterval(predictionFunction, 1000 / 5);
     return () => clearInterval(animation);
   }, [predictionFunction]);
@@ -80,7 +79,10 @@ const WebcamStreamCapture = () => {
     setCapturing(true);
     setPlaying(true);
     setPlayBackRate(1);
+    setVidUrl(null)
     start();
+    window.URL.revokeObjectURL(vidUrl);
+
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
     });
@@ -96,6 +98,7 @@ const WebcamStreamCapture = () => {
     handleDataAvailable,
     start,
     reset,
+    vidUrl
   ]);
 
   const handleStopCaptureClick = useCallback(() => {
@@ -112,9 +115,7 @@ const WebcamStreamCapture = () => {
       });
 
       const url = URL.createObjectURL(blob);
-      const video = document.getElementById("video");
-      video.src = url;
-      video.style.display = "block";
+      setVidUrl(url)
       //document.body.appendChild(a);
       //a.style = "display: none";
       //a.href = url;
@@ -142,15 +143,21 @@ const WebcamStreamCapture = () => {
         )}
       </WebCamContainer>
 
-      <WebCamContainer invisible={capturing}>
-        <VideoComponent
+      {
+        vidUrl && <WebCamContainer>
+        
+          <VideoComponent
           id="video"
           autoPlay
           playsinline
           loop
           ref={playerRef}
           controls
+          src={vidUrl}
+          
         />
+        
+     
         {!playing && (
           <Slider
             barStyle={{ borderRadius: 0, zIndex: 99999 }}
@@ -171,6 +178,8 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         ) : null}
       </WebCamContainer>
+      }
+      
 
       <ButtonContainer zIndex={99}>
         {capturing ? (
@@ -231,8 +240,7 @@ export const WebCamContainer = styled(ButtonContainer)`
 `;
 
 const VideoComponent = styled.video`
-  z-index: 999999;
-  display: none;
+  z-index: 999999
 `;
 
 const AnalyzeBtnContainer = styled.div`

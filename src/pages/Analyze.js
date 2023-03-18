@@ -33,6 +33,7 @@ function Analyze() {
   return (
     <Layout scroll>
       <h1>Analyze</h1>
+      <div>{ JSON.stringify(predictions) }</div>
       <WebCamContainer ref={canvaContainer}>
         {/*Array.isArray(predictions?.[0]?.keypoints) && (
           <Stage
