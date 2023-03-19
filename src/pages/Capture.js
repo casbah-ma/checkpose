@@ -126,7 +126,7 @@ const WebcamStreamCapture = () => {
   }, [mediaRecorderRef, setCapturing, pause]);
 
   return (
-    <Layout>
+    <Layout bgColor='black'>
       <WebCamContainer invisible={!playing && !capturing}>
         <Webcam
           audio={false}
@@ -185,7 +185,7 @@ const WebcamStreamCapture = () => {
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-          <Button onClick={handleStartCaptureClick}>New</Button>
+            <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
         )}
       </ButtonContainer>
     </Layout>
@@ -220,9 +220,22 @@ const Button = styled.button`
   }
   :active {
     box-shadow: #422800 2px 2px 0 0;
-    transform: translate(2px, 2px);
+    transform: translate(2px, 2px); 
   }
 `;
+
+const NewBtn = styled(Button)`
+background-color: black;
+box-shadow: #FFC107 4px 4px 0 0;
+:hover {
+    background-color: black;
+  }
+  :active {
+    box-shadow: #422800 2px 2px 0 0;
+    transform: translate(2px, 2px); 
+  }
+
+`
 
 export const WebCamContainer = styled(ButtonContainer)`
   display: ${(props) => (props.invisible ? "none" : "block")};

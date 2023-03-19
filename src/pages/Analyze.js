@@ -114,6 +114,7 @@ function Analyze(props) {
             onMouseDown={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
+     
   
           >
             <Layer draggable>

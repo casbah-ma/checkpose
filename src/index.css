@@ -19,3 +19,7 @@ button{
 border: none;
 background: none;
 }
+
+.konvajs-content{
+  margin: 0 auto;
+}
