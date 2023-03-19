@@ -4,6 +4,7 @@
 * 11 & 12 : hips; 13 & 14 : knees;
 * 15 & 16 : feet
 */
+import { MIN_SCORE } from "constants/config";
 
 export default function bodyMap(keypoints) {
     if(!Array.isArray(keypoints)) return
@@ -38,10 +39,9 @@ export default function bodyMap(keypoints) {
     };
 }
 
-function toArray({ x, y, score, time }) {
+function toArray({ x, y, score }) {
     return {
-        coords: [x-150, y-20],
-        score,
-        time
+        coords: [x, y],
+        score
     }
 }

@@ -50,12 +50,12 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    //const animation = requestAnimationFrame(predictionFunction);
-    //return () => cancelAnimationFrame(animation);
+    const animation = requestAnimationFrame(predictionFunction);
+    return () => cancelAnimationFrame(animation);
 
     // 5 frames per second approx
-    const animation = setInterval(predictionFunction, 1000 / 5);
-    return () => clearInterval(animation);
+    //const animation = setInterval(predictionFunction, 1000 / 20);
+    //return () => clearInterval(animation);
   }, [predictionFunction]);
 
   useEffect(() => {
@@ -85,15 +85,18 @@ const WebcamStreamCapture = () => {
   );
 
   const handleStartCaptureClick = useCallback(() => {
+    setCapturing(true);
+
+    if (vidUrl && window?.URL?.revokeObjectURL) {
+      window.URL.revokeObjectURL(vidUrl);
+    }
     reset();
     setPredictions([]);
-    setCapturing(true);
+
     setPlaying(false);
     setPlayBackRate(1);
     setVidUrl(null)
     start();
-    window.URL.revokeObjectURL(vidUrl);
-
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
     });
