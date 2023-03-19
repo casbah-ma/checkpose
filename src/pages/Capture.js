@@ -232,7 +232,7 @@ const VideoComponent = styled.video`
   z-index: 999999;
 `;
 
-const AnalyzeBtnContainer = styled.div`
+export const AnalyzeBtnContainer = styled.div`
   position: absolute;
   background-color: white;
   left: 10px;
@@ -254,6 +254,7 @@ const AnalyzeBtnContainer = styled.div`
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  z-index:999 ;
   :hover {
     background-color: #fff;
   }

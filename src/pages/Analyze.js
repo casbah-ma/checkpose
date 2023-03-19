@@ -5,10 +5,14 @@ import { Stage, Layer, Line } from "react-konva";
 import Slider from "react-smooth-range-input";
 import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
+import { AnalyzeBtnContainer } from "./Capture";
 import { LINE_COLOR, LINE_WIDTH, MIN_SCORE, TENSION } from 'constants/config'
+const tool = "pen"
 
 function Analyze() {
   const [frame, setFrame] = useState(0)
+  const [lines, setLines] = React.useState([]);
+  const isDrawing = React.useRef(false);
   const [pauseAnimation, setPauseAnimation] = useState(false)
   const location = useLocation();
   const canvaContainer = useRef(null);
@@ -34,6 +38,33 @@ function Analyze() {
     if (pauseAnimation) return;
     setFrame((prev) => ((prev + 1) % predictions.length))
   }
+
+  const handleMouseDown = (e) => {
+    isDrawing.current = true;
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+  };
+
+  const handleMouseMove = (e) => {
+    // no drawing - skipping
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
+
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
+
   
   const countFramesPerSecond = useMemo(() => (1000*predictions.length)/(predictions[predictions.length - 1].time - predictions[0].time), [predictions])
   useEffect(() => {
@@ -43,10 +74,18 @@ function Analyze() {
   
   return (
     <Layout scroll>
-      <Container ref={canvaContainer} onClick={()=>setPauseAnimation(false)}>
+      <Container ref={canvaContainer}>
+        <AnalyzeBtnContainer onClick={()=>setLines([])}>
+        Erase
+        </AnalyzeBtnContainer>
+
         {Array.isArray(predictions?.[frame]?.keypoints)  && (
-          <Stage  width={canvaContainer?.current?.clientWidth || window.innerWidth} height={window.innerHeight*.6}>
-            <Layer>
+          <Stage width={canvaContainer?.current?.clientWidth || window.innerWidth}
+          onMouseDown={handleMouseDown}
+          onMousemove={handleMouseMove}
+          onMouseup={handleMouseUp}
+            height={window.innerHeight * .6}>
+            <Layer draggable>
               <Line
                 tension={TENSION}
                 points={[
@@ -96,6 +135,24 @@ function Analyze() {
                 strokeWidth={LINE_WIDTH}
               />
             </Layer>
+            <Layer>
+
+          {lines.map((line, i) => (
+            <Line
+              key={i}
+              points={line.points}
+              stroke="#df4b26"
+              strokeWidth={5}
+              tension={0.5}
+              lineCap="round"
+              lineJoin="round"
+              globalCompositeOperation={
+                line.tool === 'eraser' ? 'destination-out' : 'source-over'
+              }
+            />
+          ))}
+            </Layer>
+            
           </Stage>
                 )}
       </Container>

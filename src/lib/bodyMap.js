@@ -40,7 +40,7 @@ export default function bodyMap(keypoints) {
 
 function toArray({ x, y, score, time }) {
     return {
-        coords: [x, y],
+        coords: [x-150, y-20],
         score,
         time
     }
