@@ -93,7 +93,7 @@ function Analyze(props) {
       ) : null}
 
       <ControlsContainer
-        top={"50vh"}
+        top={"205px"}
         onClick={() => setScale(scale+.1 <=2 ? scale+.1 : 1)}
       >
        { scale+.1 <=2 ? '+' : '-' }
@@ -106,20 +106,17 @@ function Analyze(props) {
          
         {Array.isArray(predictions?.[frame]?.keypoints) && bmap && (
           <Stage
-            width={600}
-            height={ 600 }
+            width={300}
+            height={300}
+            onTouchStart={handleMouseDown}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseUp}
             onMouseDown={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
   
           >
-            <Layer draggable >
-            <Circle
-                x={0}
-                y={0}
-                radius={10}
-                fill="white" />
-              
+            <Layer draggable>
               <Circle
                 x={bmap?.nose.coords[0]}
                 y={bmap?.nose.coords[1]}
@@ -274,9 +271,8 @@ const Container = styled.div`
   background-color: #1a1919;
   text-align: center;
   z-index: ${(props) => props.zIndex || 1};
-  width: 100%;
-  min-width: 100%;
-  height: 60vh !important;
+  width: auto;
+  height: 300px;
 `;
 
 const ControlsContainer = styled(AnalyzeBtnContainer)`
