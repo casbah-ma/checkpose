@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Stage, Layer, Line } from "react-konva";
+import { Stage, Layer, Line, Circle } from "react-konva";
 import Slider from "react-smooth-range-input";
 import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
@@ -12,32 +12,24 @@ const tool = "pen";
 function Analyze(props) {
   const navigate = useNavigate();
   const [frame, setFrame] = useState(0);
+  const [scale, setScale] = useState(1.5)
   const [lines, setLines] = React.useState([]);
   const isDrawing = React.useRef(false);
   const [pauseAnimation, setPauseAnimation] = useState(false);
   const location = useLocation();
   const canvaContainer = useRef(null);
-  const predictions = location.state || props.predictions;
+  const predictions = location.state.predictions || props.predictions;
+  const { video } = location.state;
 
-  const {
-    leftShoulder,
-    rightShoulder,
-    leftElbow,
-    rightElbow,
-    leftHip,
-    rightHip,
-    leftKnee,
-    rightKnee,
-    leftAnkle,
-    rightAnkle,
-    rightWrist,
-    leftWrist,
-  } = bodyMapper(predictions?.[frame]?.keypoints);
+  const bmap = useMemo(
+    () => bodyMapper(predictions?.[frame]?.keypoints, scale),
+    [frame, predictions, scale]
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function animate() {
-    if (pauseAnimation) return;
-    setFrame((prev) => (prev + 1) % predictions.length);
+    if (pauseAnimation || !predictions) return;
+    setFrame((prev) => (prev + 1) % predictions?.length);
   }
 
   const handleMouseDown = (e) => {
@@ -68,8 +60,8 @@ function Analyze(props) {
 
   const countFramesPerSecond = useMemo(
     () =>
-      (1000 * predictions.length) /
-      (predictions[predictions.length - 1].time - predictions[0].time),
+      (1000 * predictions?.length) /
+      (predictions[predictions?.length - 1].time - predictions[0].time),
     [predictions]
   );
 
@@ -80,89 +72,135 @@ function Analyze(props) {
 
   return (
     <Layout scroll>
-        <ControlsContainer top={"10px"} onClick={()=>navigate(-1)}>Back</ControlsContainer>
-      <ControlsContainer top={"65px"} onClick={()=>setPauseAnimation(!pauseAnimation)}>{ pauseAnimation ? 'Play' : 'Pause'}</ControlsContainer>
-      {
-        lines.length  ? <ControlsContainer top={"100px"} onClick={() => setLines([])}>
-        Erase
-      </ControlsContainer> : null
-      }
-    
-    
+
+      
+      <ControlsContainer top={"10px"} onClick={() => navigate(-1)}>
+        ← New
+      </ControlsContainer>
+      <ControlsContainer
+        top={"95px"}
+        onClick={() => setPauseAnimation(!pauseAnimation)}
+      >
+        {pauseAnimation ? "Play" : "Pause"}
+      </ControlsContainer>
+
+
+      {lines.length ? (
+        <ControlsContainer top={"150px"} onClick={() => setLines([])}>
+          Erase
+        </ControlsContainer>
+
+      ) : null}
+
+      <ControlsContainer
+        top={"50vh"}
+        onClick={() => setScale(scale+.1 <=2 ? scale+.1 : 1)}
+      >
+       { scale+.1 <=2 ? '+' : '-' }
+      </ControlsContainer>
+
       <Container ref={canvaContainer}>
-        {Array.isArray(predictions?.[frame]?.keypoints) && (
+      <VidContainer>
+        <video src={video} autoPlay loop playsInline/>
+      </VidContainer>
+         
+        {Array.isArray(predictions?.[frame]?.keypoints) && bmap && (
           <Stage
-            width={canvaContainer?.current?.clientWidth || window.innerWidth}
+            width={600}
+            height={ 600 }
             onMouseDown={handleMouseDown}
             onMousemove={handleMouseMove}
             onMouseup={handleMouseUp}
-            height={window.innerHeight * 0.6}
+  
           >
-            <Layer draggable>
-            <Line
-                tension={.1}
-                points={[
-                  ...rightShoulder.coords,
-                  ...leftShoulder.coords,
-                  ...leftHip.coords,
-                  ...rightHip.coords,
-            
-                ]}
-                fill='black'
-                closed
-
-              />
-
+            <Layer draggable >
+            <Circle
+                x={0}
+                y={0}
+                radius={10}
+                fill="white" />
               
+              <Circle
+                x={bmap?.nose.coords[0]}
+                y={bmap?.nose.coords[1]}
+                radius={3*scale}
+                fill="white" />
+               <Circle
+                x={bmap?.leftEye.coords[0]}
+                y={bmap?.leftEye.coords[1]}
+                radius={3*scale}
+                fill="white"/>
+                  <Circle
+                x={bmap?.rightEye.coords[0]}
+                y={bmap?.rightEye.coords[1]}
+                radius={3*scale}
+                fill="white" />
+              
+              <Circle
+                x={bmap?.leftEar.coords[0]}
+                y={bmap?.leftEar.coords[1]}
+                radius={2*scale}
+                fill="white"/>
+                  <Circle
+                x={bmap?.rightEar.coords[0]}
+                y={bmap?.rightEar.coords[1]}
+                radius={2*scale}
+                fill="white" />
+              <Line
+                tension={0.1}
+                points={[
+                  ...bmap?.rightShoulder.coords,
+                  ...bmap?.leftShoulder.coords,
+                  ...bmap?.leftHip.coords,
+                  ...bmap?.rightHip.coords,
+                ]}
+                fill="black"
+                closed
+              />
+
               <Line
                 tension={TENSION}
                 points={[
-                  ...rightWrist.coords,
-                  ...rightElbow.coords,
-                  ...rightShoulder.coords,
-                  ...leftShoulder.coords,
-                  ...leftElbow.coords,
-                  ...leftWrist.coords,
+                  ...bmap?.rightWrist.coords,
+                  ...bmap?.rightElbow.coords,
+                  ...bmap?.rightShoulder.coords,
+                  ...bmap?.leftShoulder.coords,
+                  ...bmap?.leftElbow.coords,
+                  ...bmap?.leftWrist.coords,
                 ]}
                 stroke={LINE_COLOR}
-                strokeWidth={.5}
+                strokeWidth={LINE_WIDTH}
               />
-         
 
-                  <Line
-                    tension={TENSION}
-                    points={[
-                      ...rightShoulder.coords,
-                      ...rightHip.coords,
-                      ...rightKnee.coords,
-                      ...rightAnkle.coords,
-                    ]}
-                    stroke={LINE_COLOR}
-                strokeWidth={LINE_WIDTH}
-                
-                  />
-        
-
-           
-                <Line
-                  tension={TENSION}
-                  points={[
-                    ...leftShoulder.coords,
-                    ...leftHip.coords,
-                    ...leftKnee.coords,
-                    ...leftAnkle.coords,
-                  ]}
-                  stroke={LINE_COLOR}
-                strokeWidth={LINE_WIDTH}
-                
-                />
-          
               <Line
                 tension={TENSION}
-                points={[...leftHip.coords, ...rightHip.coords]}
+                points={[
+                  ...bmap?.rightShoulder.coords,
+                  ...bmap?.rightHip.coords,
+                  ...bmap?.rightKnee.coords,
+                  ...bmap?.rightAnkle.coords,
+                ]}
                 stroke={LINE_COLOR}
                 strokeWidth={LINE_WIDTH}
-                
+              />
+
+              <Line
+                tension={TENSION}
+                points={[
+                  ...bmap?.leftShoulder.coords,
+                  ...bmap?.leftHip.coords,
+                  ...bmap?.leftKnee.coords,
+                  ...bmap?.leftAnkle.coords,
+                ]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
+              />
+
+              <Line
+                tension={TENSION}
+                points={[...bmap?.leftHip.coords, ...bmap?.rightHip.coords]}
+                stroke={LINE_COLOR}
+                strokeWidth={LINE_WIDTH}
               />
             </Layer>
             <Layer>
@@ -183,6 +221,7 @@ function Analyze(props) {
             </Layer>
           </Stage>
         )}
+        
       </Container>
       <Slider
         barStyle={{ borderRadius: 0, zIndex: 99999 }}
@@ -193,17 +232,43 @@ function Analyze(props) {
         }}
         min={1}
         shouldAnimateNumber
-        max={predictions.length}
+        max={predictions?.length}
         shouldDisplayValue={false}
       />
-      
-  
+
       <div>{JSON.stringify(bodyMapper(predictions?.[frame]?.keypoints))}</div>
     </Layout>
   );
 }
 
 export default Analyze;
+
+const VidContainer = styled.div`
+  position: absolute;
+  border-radius:10px;
+  top: 5px;
+  right: 22px;
+  width: 110px;
+  height: 110px !important;
+  z-index:999 ;
+  background-color: #422800;
+
+  border: 2px solid #422800;
+  opacity:.3;
+  z-index:0 ;
+  :hover{
+    opacity:1 ;
+  }
+  video {
+    width: 110px;
+    height: 110px !important;
+    object-fit:cover ;
+    border-radius:10px;
+  }
+ 
+`;
+
+
 
 const Container = styled.div`
   background-color: #1a1919;
@@ -214,7 +279,7 @@ const Container = styled.div`
   height: 60vh !important;
 `;
 
-
 const ControlsContainer = styled(AnalyzeBtnContainer)`
-  top: ${props=>props.top || "125px"}
-`
+  top: ${(props) => props.top || "125px"};
+`;
+

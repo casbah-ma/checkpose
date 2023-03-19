@@ -22,6 +22,8 @@ const WebcamStreamCapture = () => {
   const webcamRef = useRef(null);
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+
+  console.log(predictions)
   
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
@@ -99,6 +101,7 @@ const WebcamStreamCapture = () => {
     start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
+      
     });
     mediaRecorderRef.current.addEventListener(
       "dataavailable",
@@ -132,8 +135,8 @@ const WebcamStreamCapture = () => {
         />
         {capturing && (
           <AnalyzeBtnContainer>
-            {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
-            {time > 1 && predictions.length<1 && "  ⚠️ Poses Not detected"}
+            {(time < 1) ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
+            {time > 1 && predictions.length<1 && " ⚠️ NO POSE DETECTED"}
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
@@ -166,7 +169,10 @@ const WebcamStreamCapture = () => {
 
         {predictions.length ? (
           <AnalyzeBtnContainer>
-            <Link to="/analyze" state={predictions.sort((a, b) => a.time - b.time)}>
+              <Link to="/analyze" state={{
+                predictions: predictions.sort((a, b) => a.time - b.time),
+                video: vidUrl
+              }}>
               📈 Results
             </Link>
           </AnalyzeBtnContainer>
@@ -199,6 +205,7 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
+  cursor: pointer;
   width: 110px;
   height: ${(props) => (props.bg ? "auto" : "110px")};
   border-radius: 50%;
@@ -222,12 +229,13 @@ export const WebCamContainer = styled(ButtonContainer)`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 60vh !important;
+  margin: 0 auto;
+  width: 300px;
+  height: 300px;
   video {
-    width: 100%;
-    height: 60vh !important;
-    object-fit: cover;
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
   }
 `;
 
