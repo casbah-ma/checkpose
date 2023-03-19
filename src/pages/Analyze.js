@@ -35,7 +35,7 @@ function Analyze() {
     setFrame((prev) => ((prev + 1) % predictions.length))
   }
   
-  const countFramesPerSecond = useMemo(() => (1000*(predictions.length - 1))/(predictions[predictions.length - 1].time - predictions[0].time), [predictions])
+  const countFramesPerSecond = useMemo(() => (1000*predictions.length)/(predictions[predictions.length - 1].time - predictions[0].time), [predictions])
   useEffect(() => {
     const animation = setInterval(animate, 1000 / countFramesPerSecond);
     return () => clearInterval(animation);
@@ -102,10 +102,10 @@ function Analyze() {
       <Slider
             barStyle={{ borderRadius: 0, zIndex: 99999 }}
             value={frame}
-        onChange={(value) => { setFrame(value - 1);  setPauseAnimation(true)}}
+            onChange={(value) => { setFrame(value - 1);  setPauseAnimation(true)}}
             min={1}
             max={predictions.length}
-            barColor={"#e1dada"}
+
             shouldDisplayValue={false}
           />
       <h1>Analyze</h1>
