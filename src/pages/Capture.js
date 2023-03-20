@@ -245,6 +245,7 @@ export const WebCamContainer = styled(ButtonContainer)`
   margin: 0 auto;
   width: 300px;
   height: 300px;
+  border: 1px solid rgba(255,255,255,.05);
   video {
     width: 300px;
     height: 300px;
@@ -259,8 +260,8 @@ const VideoComponent = styled.video`
 export const AnalyzeBtnContainer = styled.div`
   position: absolute;
   background-color: white;
-  left: 10px;
-  top: 10px;
+  left: 0;
+  top: 0;
   padding: 10px;
   background-color: #fbeee0;
   border: 2px solid #422800;
