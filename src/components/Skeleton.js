@@ -10,33 +10,33 @@ const Skeleton = ({body, scale}) => {
               <Circle
                 x={body?.nose.coords[0]}
                 y={body?.nose.coords[1]}
-                radius={3 * scale}
-                fill="white"
+                radius={4 * scale}
+                fill="rgba(255,255,255,.8)"
               />
               <Circle
                 x={body?.leftEye.coords[0]}
                 y={body?.leftEye.coords[1]}
                 radius={3 * scale}
-                fill="white"
+                fill="rgba(255,255,255,.7)"
               />
               <Circle
                 x={body?.rightEye.coords[0]}
                 y={body?.rightEye.coords[1]}
                 radius={3 * scale}
-                fill="white"
+                fill="rgba(255,255,255,.7)"
               />
 
               <Circle
                 x={body?.leftEar.coords[0]}
                 y={body?.leftEar.coords[1]}
                 radius={2 * scale}
-                fill="white"
+                fill="rgba(255,255,255,.6)"
               />
               <Circle
                 x={body?.rightEar.coords[0]}
                 y={body?.rightEar.coords[1]}
                 radius={2 * scale}
-                fill="white"
+                fill="rgba(255,255,255,.6)"
               />
               <Line
                 tension={0.1}

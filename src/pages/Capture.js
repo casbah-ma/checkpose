@@ -23,8 +23,8 @@ const WebcamStreamCapture = () => {
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
-  console.log(predictions)
-  
+  console.log(predictions);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
@@ -54,8 +54,6 @@ const WebcamStreamCapture = () => {
   useEffect(() => {
     const animation = requestAnimationFrame(predictionFunction);
     return () => cancelAnimationFrame(animation);
-
-    // 5 frames per second approx
     //const animation = setInterval(predictionFunction, 1000 / 20);
     //return () => clearInterval(animation);
   }, [predictionFunction]);
@@ -72,7 +70,7 @@ const WebcamStreamCapture = () => {
         type: "video/webm",
       });
       const url = URL.createObjectURL(blob);
-      setVidUrl(url)
+      setVidUrl(url);
       setRecordedChunks([]);
     }
   }, [recordedChunks]);
@@ -92,16 +90,15 @@ const WebcamStreamCapture = () => {
     if (vidUrl && window?.URL?.revokeObjectURL) {
       window.URL.revokeObjectURL(vidUrl);
     }
+
     reset();
     setPredictions([]);
-
     setPlaying(false);
     setPlayBackRate(1);
-    setVidUrl(null)
+    setVidUrl(null);
     start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
-      
     });
     mediaRecorderRef.current.addEventListener(
       "dataavailable",
@@ -115,7 +112,7 @@ const WebcamStreamCapture = () => {
     handleDataAvailable,
     start,
     reset,
-    vidUrl
+    vidUrl,
   ]);
 
   const handleStopCaptureClick = useCallback(() => {
@@ -126,7 +123,7 @@ const WebcamStreamCapture = () => {
   }, [mediaRecorderRef, setCapturing, pause]);
 
   return (
-    <Layout bgColor='black'>
+    <Layout bgColor="black">
       <WebCamContainer invisible={!playing && !capturing}>
         <Webcam
           audio={false}
@@ -135,57 +132,57 @@ const WebcamStreamCapture = () => {
         />
         {capturing && (
           <AnalyzeBtnContainer>
-            {(time < 1) ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
-            {time > 1 && predictions.length<1 && " ⚠️ NO POSE DETECTED"}
+            {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
+            {time > 1 && predictions.length < 1 && " ⚠️ NO POSE DETECTED"}
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
-      {
-        vidUrl && <WebCamContainer>
-        
+      {vidUrl && (
+        <WebCamContainer>
           <VideoComponent
-          id="video"
-          autoPlay
-          playsinline
-          loop
-          ref={playerRef}
-          controls
-          src={vidUrl}
-          
-        />
-        
-     
-        {playing && (
-          <Slider
-            barStyle={{ borderRadius: 0, zIndex: 99999 }}
-            value={playbackRate * 1 === 1 ? 100 : playbackRate}
-            onChange={(value) => setPlayBackRate(value / 100)}
-            min={10}
-            max={100}
-            barColor={"#e1dada"}
-            shouldDisplayValue={false}
+            id="video"
+            autoPlay
+            playsinline
+            loop
+            ref={playerRef}
+            controls
+            src={vidUrl}
           />
-        )}
 
-        {predictions.length ? (
-          <AnalyzeBtnContainer>
-              <Link to="/analyze" state={{
-                predictions: predictions.sort((a, b) => a.time - b.time),
-                video: vidUrl
-              }}>
-              📈 Results
-            </Link>
-          </AnalyzeBtnContainer>
-        ) : null}
-      </WebCamContainer>
-      }
+          {playing && (
+            <Slider
+              barStyle={{ borderRadius: 0, zIndex: 99999 }}
+              value={playbackRate * 1 === 1 ? 100 : playbackRate}
+              onChange={(value) => setPlayBackRate(value / 100)}
+              min={10}
+              max={100}
+              barColor={"#e1dada"}
+              shouldDisplayValue={false}
+            />
+          )}
+
+          {predictions.length ? (
+            <AnalyzeBtnContainer>
+              <Link
+                to="/analyze"
+                state={{
+                  predictions: predictions.sort((a, b) => a.time - b.time),
+                  video: vidUrl,
+                }}
+              >
+                📈 Results
+              </Link>
+            </AnalyzeBtnContainer>
+          ) : null}
+        </WebCamContainer>
+      )}
       <ButtonContainer zIndex={99}>
         {capturing ? (
           <>
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-            <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
+          <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
         )}
       </ButtonContainer>
     </Layout>
@@ -220,22 +217,21 @@ const Button = styled.button`
   }
   :active {
     box-shadow: #422800 2px 2px 0 0;
-    transform: translate(2px, 2px); 
+    transform: translate(2px, 2px);
   }
 `;
 
 export const NewBtn = styled(Button)`
-background-color: black;
-box-shadow: #FFC107 4px 4px 0 0;
-:hover {
+  background-color: black;
+  box-shadow: #ffc107 4px 4px 0 0;
+  :hover {
     background-color: black;
   }
   :active {
     box-shadow: #422800 2px 2px 0 0;
-    transform: translate(2px, 2px); 
+    transform: translate(2px, 2px);
   }
-
-`
+`;
 
 export const WebCamContainer = styled(ButtonContainer)`
   display: ${(props) => (props.invisible ? "none" : "block")};
@@ -245,11 +241,11 @@ export const WebCamContainer = styled(ButtonContainer)`
   margin: 0 auto;
   width: 300px;
   height: 300px;
-  border: 1px solid rgba(255,255,255,.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
   video {
     width: 300px;
     height: 300px;
-
   }
 `;
 
@@ -279,7 +275,7 @@ export const AnalyzeBtnContainer = styled.div`
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  z-index:999 ;
+  z-index: 999;
   :hover {
     background-color: #fff;
   }
