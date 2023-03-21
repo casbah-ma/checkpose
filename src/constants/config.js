@@ -1,5 +1,5 @@
 const LINE_COLOR = "orange";
-const LINE_WIDTH =.5;
+const LINE_WIDTH =2;
 const MIN_SCORE = 0;
 const TENSION = 0
 

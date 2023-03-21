@@ -194,7 +194,7 @@ const WebcamStreamCapture = () => {
 
 export default WebcamStreamCapture;
 
-const ButtonContainer = styled.div`
+export const ButtonContainer = styled.div`
   position: fixed;
   bottom: 50px;
   right: 0;
@@ -224,7 +224,7 @@ const Button = styled.button`
   }
 `;
 
-const NewBtn = styled(Button)`
+export const NewBtn = styled(Button)`
 background-color: black;
 box-shadow: #FFC107 4px 4px 0 0;
 :hover {
