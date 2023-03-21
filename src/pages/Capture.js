@@ -3,8 +3,9 @@ import "@tensorflow/tfjs-backend-webgl";
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import styled from "styled-components";
-import Slider from "react-smooth-range-input";
+import Slider from "rc-slider";
 import { useTimer } from "use-timer";
 import loadMoveNet from "lib/loadMoveNet";
 import Layout from "components/Layout";
@@ -23,8 +24,6 @@ const WebcamStreamCapture = () => {
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
-  console.log(predictions);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
@@ -39,7 +38,7 @@ const WebcamStreamCapture = () => {
         ]);
       }
     } catch (error) {
-      console.error("predictionFunction()\n\n", error);
+      toast.error(error);
     }
   };
 
@@ -52,7 +51,7 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    const animation = requestAnimationFrame(predictionFunction);
+    const animation = requestAnimationFrame(predictionFunction)
     return () => cancelAnimationFrame(animation);
     //const animation = setInterval(predictionFunction, 1000 / 20);
     //return () => clearInterval(animation);
@@ -85,6 +84,7 @@ const WebcamStreamCapture = () => {
   );
 
   const handleStartCaptureClick = useCallback(() => {
+ 
     setCapturing(true);
 
     if (vidUrl && window?.URL?.revokeObjectURL) {
@@ -150,15 +150,17 @@ const WebcamStreamCapture = () => {
           />
 
           {playing && (
-            <Slider
-              barStyle={{ borderRadius: 0, zIndex: 99999 }}
-              value={playbackRate * 1 === 1 ? 100 : playbackRate}
-              onChange={(value) => setPlayBackRate(value / 100)}
-              min={10}
-              max={100}
-              barColor={"#e1dada"}
-              shouldDisplayValue={false}
-            />
+            <>
+              <label>Playback Rate</label>
+                <Slider
+                value={(playbackRate * 1 === 1) ? 100 : playbackRate*100}
+                onChange={(value) => setPlayBackRate(value / 100)}
+                min={10}
+                max={100}
+                defaultValue={100}
+              />
+            </>
+           
           )}
 
           {predictions.length ? (

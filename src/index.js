@@ -4,9 +4,11 @@ import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import Capture from 'pages/Capture'
 import Analyze from 'pages/Analyze';
+import 'rc-slider/assets/index.css';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -28,6 +30,7 @@ const router = createBrowserRouter([
 const root = createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Toaster />
     <RouterProvider router={ router } />
   </React.StrictMode>
 );

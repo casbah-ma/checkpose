@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import Slider from "react-smooth-range-input";
+import Slider from "rc-slider";
 import Layout from "components/Layout";
 import bodyMapper from "lib/bodyMap";
 import { AnalyzeBtnContainer } from "./Capture";
 import { NewBtn, ButtonContainer } from "./Capture";
 import Skeleton from "components/Skeleton";
+import StreamChart from "components/StreamChart";
 
 function Analyze(props) {
   const navigate = useNavigate();
@@ -59,11 +60,11 @@ function Analyze(props) {
         <video src={video} autoPlay loop playsInline ref={videoRef} />
       </VidContainer>
 
-      <ControlsContainer top={"0"} onClick={() => handlePause()}>
+      <ControlsContainer top={"240px"} onClick={() => handlePause()}>
         {pauseAnimation ? "▷" : "| |"}
       </ControlsContainer>
 
-      <ControlsContainer top={"240px"}>
+      <ControlsContainer top={"0px"}>
         <div onClick={() => setScale(scale + 0.1)}> +</div>
         <div onClick={() => setScale(scale - 0.1)}> -</div>
       </ControlsContainer>
@@ -73,25 +74,30 @@ function Analyze(props) {
           <Skeleton body={bmap} scale={scale} />
         )}
       </Container>
-
+      <div style={{
+        zIndex: 999999999999,
+        background: "white",
+        height: "15px"
+      }}>
       <Slider
-        barStyle={{
-          borderRadius: 0,
-          zIndex: 99999,
-          background: "rgb(16 17 20)",
-        }}
-        value={frame}
-        onChange={(value) => {
-          setFrame(value - 1);
-
-          videoRef.current.currentTime =
-            (predictions[frame].time - predictions[0].time) / 1000;
-        }}
-        min={1}
-        shouldAnimateNumber
-        max={predictions?.length}
-        shouldDisplayValue={false}
-      />
+       
+      
+       value={frame}
+       onChange={(value) => {
+         setFrame(value - 1);
+         videoRef.current.currentTime =
+           (predictions[frame].time - predictions[0].time) / 1000;
+       }}
+       min={1}
+       shouldAnimateNumber
+       max={predictions?.length}
+       shouldDisplayValue={false}
+     />
+      </div>
+   
+      <StreamChart />
+      <div style={{marginBottom:"250px"}} />
+     
 
       <ButtonContainer zIndex={99}>
         <NewBtn onClick={() => navigate("/")}>New</NewBtn>
