@@ -70,12 +70,51 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Any other custom service worker logic can go here.
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-      (async function () {
-        const response = await caches.match(event.request);
-        return response || fetch(event.request);
-      })(),
-    );
+//https://gist.github.com/notwaldorf/7740d4249272fb7a2d509b3ea4240658
+const CACHE_NAME = 'opencoach-tf';
+// Location of all the shards, i.e. all the files next to your model.json file.
+const MODEL_PREFIX = 'https://storage.googleapis.com/tfhub-tfjs-modules/google/tfjs-model/movenet/singlepose/thunder/4';
+const NUM_SHARDS = 3;
+// Make sure your shards match this naming scheme (you might not have an extension, for example)
+const SHARDS_NAMING_SCHEME = (i) => `${MODEL_PREFIX}/group1-shard${i}of${NUM_SHARDS}.bin`;
+
+self.addEventListener('install', e => {
+  e.waitUntil(
+    (async function() {
+      const cache = await caches.open(CACHE_NAME);
+      const resources = [];
+      
+      resources.push(`${MODEL_PREFIX}/model.json`);
+      for (let i = 1; i <= NUM_SHARDS; i++) {
+        resources.push(SHARDS_NAMING_SCHEME(i))
+      }
+  
+      // If you have other local files you want to cache, like your index.html or style.css,
+      // push them onto the resources array before the next line.
+      
+      await Promise.all([cache.addAll(resources)]);
+    })()
+  );
+});
+
+self.addEventListener('fetch', e => {
+  // Fix the trailing slash.
+  let request = e.request;
+  if(request.url.endsWith('/')) {
+    request = new Request(request.url + 'index.html', e);
+  }
+
+  e.respondWith(
+    caches.match(e.request).then(response => {
+      if (response) {
+        console.log('Cached', e.request.url);
+        return response;
+      } else {
+        console.log('Not cached, fetching', e.request.url);
+        return fetch(e.request);
+      }
+      // Or this, if you don't want the console logs for debugging.
+      // return response || fetch(e.request);
+    })
+  );
 });

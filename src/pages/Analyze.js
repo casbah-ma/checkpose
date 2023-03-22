@@ -29,12 +29,6 @@ function Analyze(props) {
     [frame, predictions, scale]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function animate() {
-    if (pauseAnimation || !predictions) return;
-    setFrame((prev) => (prev + 1) % predictions?.length);
-  }
-
   function handlePause() {
     setPauseAnimation(!pauseAnimation);
     try {
@@ -58,9 +52,14 @@ function Analyze(props) {
   );
 
   useEffect(() => {
+    function animate() {
+      if (pauseAnimation || !predictions) return;
+      setFrame((prev) => (prev + 1) % predictions?.length);
+    }
+
     const animation = setInterval(animate, 1000 / countFramesPerSecond);
     return () => clearInterval(animation);
-  }, [animate, countFramesPerSecond]);
+  }, [countFramesPerSecond, pauseAnimation, predictions]);
 
   useEffect(() => {
     let output = [];

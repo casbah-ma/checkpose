@@ -7,7 +7,7 @@ height: 100vh;
 margin: 0px auto;
 background-color: #07090a ;
 overflow-y: ${props => props.scroll ? "scroll" : "hidden"}  ;
-border: 2px solid rgba(0,0,0,.05);
+border: 2px solid rgba(255,255,255,.01);
 overflow-x: hidden ;
 `
 
