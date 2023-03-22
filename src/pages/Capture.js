@@ -47,7 +47,7 @@ const WebcamStreamCapture = () => {
       .then(() => {
         loadMoveNet(setModel);
       })
-      .catch((e) => alert("WebGL Not supported"));
+      .catch(() => toast.error("WebGL Not supported"));
   }, []);
 
   useEffect(() => {
