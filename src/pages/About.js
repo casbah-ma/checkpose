@@ -3,26 +3,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Layout from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
-const TEXT = [
-  {
-    title: "Analyze",
-    description: "Analyze your body movements with the comfort of a smartphone",
-  },
-  {
-    title: "Visualize",
-    description:
-      "Understand your body’s strengths and weaknesses",
-  },
-  {
-    title: "Offline",
-    description: "Runs on your browser even without internet or a server",
-  },
-  {
-    title: "Free forever",
-    description:
-      "Code and documentation are at github.com/opencoach",
-  },
-];
 
 function Intro() {
   const navigate = useNavigate();
@@ -35,12 +15,7 @@ function Intro() {
     <Layout scroll>
       <Container>
         <Skip onClick={() => onSkip()}>Skip</Skip>
-        {TEXT.map((t,k) => (
-          <>
-            <Title key={k+'key--'}>{t.title}</Title>
-            <Paragraph>{t.description}</Paragraph>
-          </>
-        ))}
+        <Title>ABOUT</Title>
       </Container>
     </Layout>
   );

@@ -52,18 +52,15 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    toast(
-      "When you press [New], your browser may hang for few seconds.",
-      {
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-        duration: 3000,
-      }
-    );
+    toast("When you press [New], your browser may hang for few seconds.", {
+      icon: "👏",
+      style: {
+        borderRadius: "10px",
+        background: "#333",
+        color: "#fff",
+      },
+      duration: 3000,
+    });
   }, []);
 
   useEffect(() => {
@@ -151,6 +148,7 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         )}
       </WebCamContainer>
+      
       {vidUrl && (
         <WebCamContainer>
           <VideoComponent
@@ -177,26 +175,36 @@ const WebcamStreamCapture = () => {
             </>
           )}
 
+          <>
+          <input
+              type="file"
+              id="videofile"
+              name="videofile"
+              accept="video/mp4,video/x-m4v,video/*"
+            />
+          </>
+
           {predictions.length ? (
-            <AnalyzeBtnContainer  to="/analyze"
-            state={{
-              predictions: predictions.sort((a, b) => a.time - b.time),
-              video: vidUrl,
-            }}>
-              
-                📈 Results
-              
+            <AnalyzeBtnContainer
+              to="/analyze"
+              state={{
+                predictions: predictions.sort((a, b) => a.time - b.time),
+                video: vidUrl,
+              }}
+            >
+              📈 Results
             </AnalyzeBtnContainer>
           ) : null}
         </WebCamContainer>
       )}
+    
       <ButtonContainer zIndex={99}>
         {capturing ? (
           <>
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-          <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
+            <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
         )}
       </ButtonContainer>
     </Layout>
@@ -299,7 +307,6 @@ export const AnalyzeBtnContainer = styled(Link)`
   }
   a {
     text-decoration: none;
-    height:100%;
+    height: 100%;
   }
 `;
-

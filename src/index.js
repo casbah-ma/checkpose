@@ -26,6 +26,10 @@ const router = createBrowserRouter([
     element: <Analyze />,
   },
   {
+    path: "/about",
+    element: <Capture />,
+  },
+  {
     path: "*",
     element: <h1>NOT FOUND</h1>,
   }
