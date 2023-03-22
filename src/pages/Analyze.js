@@ -16,7 +16,7 @@ function Analyze(props) {
   const navigate = useNavigate();
   const [frame, setFrame] = useState(0);
   const [scale, setScale] = useState(1.5);
-  const [angles, setAngles] = useState([])
+  const [angles, setAngles] = useState([]);
   const [pauseAnimation, setPauseAnimation] = useState(false);
   const location = useLocation();
   const canvaContainer = useRef(null);
@@ -46,7 +46,7 @@ function Analyze(props) {
         videoRef.current.play();
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -63,77 +63,103 @@ function Analyze(props) {
   }, [animate, countFramesPerSecond]);
 
   useEffect(() => {
-    let output = []
-    const predictionLenght = predictions.length
+    let output = [];
+    const predictionLenght = predictions.length;
 
-    for (let i = 0; i < predictionLenght; i++){
-      const bmap = bodyMapper(predictions[i].keypoints)
-      const rightKnee = findAngle(bmap.rightHip.coords, bmap.rightKnee.coords, bmap.rightAnkle.coords)
-      const leftKnee = findAngle(bmap.leftHip.coords, bmap.leftKnee.coords, bmap.leftAnkle.coords)
-      const rightElbow = findAngle(bmap.rightShoulder.coords, bmap.rightElbow.coords, bmap.rightWrist.coords)
-      const leftElbow = findAngle(bmap.leftShoulder.coords, bmap.leftElbow.coords, bmap.leftWrist.coords)
-      const back= findAngle(bmap.rightShoulder.coords, bmap.rightHip.coords, bmap.rightKnee.coords)
+    for (let i = 0; i < predictionLenght; i++) {
+      const bmap = bodyMapper(predictions[i].keypoints);
+      const rightKnee = findAngle(
+        bmap.rightHip.coords,
+        bmap.rightKnee.coords,
+        bmap.rightAnkle.coords
+      );
+      const leftKnee = findAngle(
+        bmap.leftHip.coords,
+        bmap.leftKnee.coords,
+        bmap.leftAnkle.coords
+      );
+      const rightElbow = findAngle(
+        bmap.rightShoulder.coords,
+        bmap.rightElbow.coords,
+        bmap.rightWrist.coords
+      );
+      const leftElbow = findAngle(
+        bmap.leftShoulder.coords,
+        bmap.leftElbow.coords,
+        bmap.leftWrist.coords
+      );
+      const back = findAngle(
+        bmap.rightShoulder.coords,
+        bmap.rightHip.coords,
+        bmap.rightKnee.coords
+      );
       output.push({
         rightKnee,
         leftKnee,
         rightElbow,
         leftElbow,
         back,
-        time: predictions[i].time - predictions[0].time
-      })
+        time: predictions[i].time - predictions[0].time,
+      });
     }
 
-    setAngles(output)
-  },[predictions])
+    setAngles(output);
+  }, [predictions]);
 
   return (
     <Layout scroll>
-      <VidContainer>
-        <video src={video} autoPlay loop playsInline ref={videoRef} />
-      </VidContainer>
+      <Fixed>
+        <VidContainer>
+          <video src={video} autoPlay loop playsInline ref={videoRef} />
+        </VidContainer>
 
-      <ControlsContainer top={"240px"} onClick={() => handlePause()}>
-        {pauseAnimation ? "▷" : "| |"}
-      </ControlsContainer>
+        <ControlsContainer top={"240px"} onClick={() => handlePause()}>
+          {pauseAnimation ? "▷" : "| |"}
+        </ControlsContainer>
 
-      <ControlsContainer top={"0px"}>
-        <div onClick={() => setScale(scale + 0.1)}> +</div>
-        <div onClick={() => setScale(scale - 0.1)}> -</div>
-      </ControlsContainer>
+        <ControlsContainer top={"0px"}>
+          <div onClick={() => setScale(scale + 0.1)}> +</div>
+          <div onClick={() => setScale(scale - 0.1)}> -</div>
+        </ControlsContainer>
 
-      <Container ref={canvaContainer}>
-        {Array.isArray(predictions?.[frame]?.keypoints) && bmap && (
-          <Skeleton body={bmap} scale={scale} />
-        )}
-      </Container>
+        <Container ref={canvaContainer}>
+          {Array.isArray(predictions?.[frame]?.keypoints) && bmap && (
+            <Skeleton body={bmap} scale={scale} />
+          )}
+        </Container>
 
-      <SliderContainer id="slider-track">
-        <Slider
-          value={frame}
-          onChange={(value) => {
-            setFrame(value - 1);
-            videoRef.current.currentTime =
-              (predictions[frame].time - predictions[0].time) / 1000;
-          }}
-          min={1}
-          shouldAnimateNumber
-          max={predictions?.length}
-          shouldDisplayValue={false}
-        />
-      </SliderContainer>
-      <Spacer />
+        <SliderContainer id="slider-track">
+          <Slider
+            value={frame}
+            onChange={(value) => {
+              setFrame(value - 1);
+              videoRef.current.currentTime =
+                (predictions[frame].time - predictions[0].time) / 1000;
+            }}
+            min={1}
+            shouldAnimateNumber
+            max={predictions?.length}
+            shouldDisplayValue={false}
+          />
+        </SliderContainer>
+      </Fixed>
+
+      <Spacer bottom={350} />
       <label>Knees</label>
       <Spacer />
       <LineChartComponent data={angles} dataKeys={["rightKnee", "leftKnee"]} />
       <Spacer />
       <label>Elbows</label>
       <Spacer />
-      <LineChartComponent data={angles} dataKeys={["rightElbow", "leftElbow"]} />
+      <LineChartComponent
+        data={angles}
+        dataKeys={["rightElbow", "leftElbow"]}
+      />
       <Spacer />
       <label>Back</label>
       <Spacer />
-      <LineChartComponent data={angles} dataKeys={ ["back"]} />
-      <ButtonContainer zIndex={99}>
+      <LineChartComponent data={angles} dataKeys={["back"]} />
+      <ButtonContainer zIndex={99999999}>
         <NewBtn onClick={() => navigate("/")}>New</NewBtn>
       </ButtonContainer>
     </Layout>
@@ -186,4 +212,15 @@ const SliderContainer = styled.div`
   z-index: 999999999999;
   background: white;
   height: 15px;
+`;
+
+const Fixed = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  width: 100%;
+  z-index: 999999999;
+  background-color: #07090a;
 `;
