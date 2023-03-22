@@ -84,9 +84,6 @@ const WebcamStreamCapture = () => {
   );
 
   const handleStartCaptureClick = useCallback(() => {
- 
-    setCapturing(true);
-
     if (vidUrl && window?.URL?.revokeObjectURL) {
       window.URL.revokeObjectURL(vidUrl);
     }
@@ -96,6 +93,7 @@ const WebcamStreamCapture = () => {
     setPlaying(false);
     setPlayBackRate(1);
     setVidUrl(null);
+    setCapturing(true);
     start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",

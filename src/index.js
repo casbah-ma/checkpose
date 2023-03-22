@@ -8,12 +8,17 @@ import { Toaster } from 'react-hot-toast';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import Capture from 'pages/Capture'
 import Analyze from 'pages/Analyze';
+import Intro from 'pages/Intro'
 import 'rc-slider/assets/index.css';
 import './index.css';
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Intro />,
+  },
+  {
+    path: "/capture",
     element: <Capture />,
   },
   {

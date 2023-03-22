@@ -24,7 +24,7 @@ function Analyze(props) {
 
   useEffect(() => {
     if (!predictions && navigate) {
-      navigate("/");
+      navigate("/capture");
     }
   }, [predictions, navigate]);
 
@@ -177,8 +177,16 @@ function Analyze(props) {
           <label>Back</label>
           <Spacer />
           <LineChartComponent data={angles} dataKeys={["back"]} />
+          <Spacer />
+          <label>Shoulder/Hips</label>
+          <Spacer />
+          <LineChartComponent
+            data={angles}
+            dataKeys={["rightElbow", "leftElbow"]}
+          />
+
           <ButtonContainer zIndex={99999999}>
-            <NewBtn onClick={() => navigate("/")}>New</NewBtn>
+            <NewBtn onClick={() => navigate("/capture")}>New</NewBtn>
           </ButtonContainer>
         </>
       )}
