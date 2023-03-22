@@ -223,4 +223,6 @@ const Fixed = styled.div`
   width: 100%;
   z-index: 999999999;
   background-color: #07090a;
+  max-width:600px;
+  margin:0 auto;
 `;

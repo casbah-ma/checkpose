@@ -151,7 +151,7 @@ const WebcamStreamCapture = () => {
 
           {playing && (
             <>
-              <label>Playback Rate</label>
+              <label>Playback Speed</label>
                 <Slider
                 value={(playbackRate * 1 === 1) ? 100 : playbackRate*100}
                 onChange={(value) => setPlayBackRate(value / 100)}
