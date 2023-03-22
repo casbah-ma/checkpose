@@ -1,5 +1,5 @@
 html, body {
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 body {
@@ -9,10 +9,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #020202;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #0f1112;
 }
 
-video {
-  width: 100%    !important;
-  height: auto   !important;
+button{
+  padding: 0;
+border: none;
+background: none;
+}
+label{
+  color: rgba(255,255,255);
+}
+.konvajs-content{
+  margin: 0 auto;
+}
+#slider-track .rc-slider-handle{
+  width: 1px;
+  height: 200vh;
 }
