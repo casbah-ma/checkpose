@@ -6,7 +6,7 @@ const LineChartComponent = ({ data, dataKeys }) => (
         <AreaChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
         <Tooltip />
       {dataKeys.map((d, k) => (
-        <Area type="monotone" dataKey={d} stroke={colors[k+1]} fill={colors[k+1]} strokeWidth="5" />
+          <Area type="monotone" dataKey={d} stroke={colors[k + 1]} fill={colors[k + 1]} strokeWidth="5" key={ k+'dd'} />
       ))}
     </AreaChart>
   </ResponsiveContainer>
