@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Layout from "components/Layout";
-import { Title, Paragraph } from "components/Typo";
+import { Title } from "components/Typo";
 
 function Intro() {
   const navigate = useNavigate();
