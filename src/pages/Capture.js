@@ -1,8 +1,9 @@
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import Webcam from "react-webcam";
 import { Link } from "react-router-dom";
+import Webcam from "react-webcam";
+import Spacer from "components/Spacer";
 import { toast } from "react-hot-toast";
 import styled from "styled-components";
 import Slider from "rc-slider";
@@ -51,7 +52,22 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    const animation = requestAnimationFrame(predictionFunction)
+    toast(
+      "When you press [New], your browser may hang for few seconds.",
+      {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+        duration: 3000,
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(predictionFunction);
     return () => cancelAnimationFrame(animation);
     //const animation = setInterval(predictionFunction, 1000 / 20);
     //return () => clearInterval(animation);
@@ -149,29 +165,27 @@ const WebcamStreamCapture = () => {
 
           {playing && (
             <>
+              <Spacer />
               <label>Playback Speed</label>
-                <Slider
-                value={(playbackRate * 1 === 1) ? 100 : playbackRate*100}
+              <Slider
+                value={playbackRate * 1 === 1 ? 100 : playbackRate * 100}
                 onChange={(value) => setPlayBackRate(value / 100)}
                 min={10}
                 max={100}
                 defaultValue={100}
               />
             </>
-           
           )}
 
           {predictions.length ? (
-            <AnalyzeBtnContainer>
-              <Link
-                to="/analyze"
-                state={{
-                  predictions: predictions.sort((a, b) => a.time - b.time),
-                  video: vidUrl,
-                }}
-              >
+            <AnalyzeBtnContainer  to="/analyze"
+            state={{
+              predictions: predictions.sort((a, b) => a.time - b.time),
+              video: vidUrl,
+            }}>
+              
                 📈 Results
-              </Link>
+              
             </AnalyzeBtnContainer>
           ) : null}
         </WebCamContainer>
@@ -253,7 +267,7 @@ const VideoComponent = styled.video`
   z-index: 999999;
 `;
 
-export const AnalyzeBtnContainer = styled.div`
+export const AnalyzeBtnContainer = styled(Link)`
   position: absolute;
   background-color: white;
   left: 0;
@@ -285,5 +299,7 @@ export const AnalyzeBtnContainer = styled.div`
   }
   a {
     text-decoration: none;
+    height:100%;
   }
 `;
+

@@ -12,8 +12,16 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-color: #07090A;
-  background-image: url('https://replicate.delivery/pbxt/8yTZor5vtF61Ghv8BrYouCGpdnxZd3feOfjWnuMnGwXPDcUhA/out-0.png');
+  background-image: url('/public/bg.png');
+  backdrop-filter: blur(20px);
+  animation: slidein 100s;
 }
+
+@keyframes slidein {
+  from {background-position: top;background-size:3000px; }
+  to {background-position: -100px 0px;background-size:2750px;}
+  
+  }
 
 button{
   padding: 0;
@@ -29,4 +37,24 @@ label{
 #slider-track .rc-slider-handle{
   width: 1px;
   height: 200vh;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
