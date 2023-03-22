@@ -3,16 +3,20 @@ import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import Slider from "rc-slider";
 import Layout from "components/Layout";
+import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
+import findAngle from "lib/findAngle";
 import { AnalyzeBtnContainer } from "./Capture";
 import { NewBtn, ButtonContainer } from "./Capture";
 import Skeleton from "components/Skeleton";
-import StreamChart from "components/StreamChart";
+//import StreamChart from "components/StreamChart";
+import Spacer from "components/Spacer";
 
 function Analyze(props) {
   const navigate = useNavigate();
   const [frame, setFrame] = useState(0);
   const [scale, setScale] = useState(1.5);
+  const [angles, setAngles] = useState([])
   const [pauseAnimation, setPauseAnimation] = useState(false);
   const location = useLocation();
   const canvaContainer = useRef(null);
@@ -33,12 +37,16 @@ function Analyze(props) {
 
   function handlePause() {
     setPauseAnimation(!pauseAnimation);
-    if (!pauseAnimation) {
-      videoRef.current.pause();
-      videoRef.current.currentTime =
-        (predictions[frame].time - predictions[0].time) / 1000;
-    } else {
-      videoRef.current.play();
+    try {
+      if (!pauseAnimation) {
+        videoRef.current.pause();
+        videoRef.current.currentTime =
+          (predictions[frame].time - predictions[0].time) / 1000;
+      } else {
+        videoRef.current.play();
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -53,6 +61,30 @@ function Analyze(props) {
     const animation = setInterval(animate, 1000 / countFramesPerSecond);
     return () => clearInterval(animation);
   }, [animate, countFramesPerSecond]);
+
+  useEffect(() => {
+    let output = []
+    const predictionLenght = predictions.length
+
+    for (let i = 0; i < predictionLenght; i++){
+      const bmap = bodyMapper(predictions[i].keypoints)
+      const rightKnee = findAngle(bmap.rightHip.coords, bmap.rightKnee.coords, bmap.rightAnkle.coords)
+      const leftKnee = findAngle(bmap.leftHip.coords, bmap.leftKnee.coords, bmap.leftAnkle.coords)
+      const rightElbow = findAngle(bmap.rightShoulder.coords, bmap.rightElbow.coords, bmap.rightWrist.coords)
+      const leftElbow = findAngle(bmap.leftShoulder.coords, bmap.leftElbow.coords, bmap.leftWrist.coords)
+      const back= findAngle(bmap.rightShoulder.coords, bmap.rightHip.coords, bmap.rightKnee.coords)
+      output.push({
+        rightKnee,
+        leftKnee,
+        rightElbow,
+        leftElbow,
+        back,
+        time: predictions[i].time - predictions[0].time
+      })
+    }
+
+    setAngles(output)
+  },[predictions])
 
   return (
     <Layout scroll>
@@ -74,31 +106,33 @@ function Analyze(props) {
           <Skeleton body={bmap} scale={scale} />
         )}
       </Container>
-      <div style={{
-        zIndex: 999999999999,
-        background: "white",
-        height: "15px"
-      }}>
-      <Slider
-       
-      
-       value={frame}
-       onChange={(value) => {
-         setFrame(value - 1);
-         videoRef.current.currentTime =
-           (predictions[frame].time - predictions[0].time) / 1000;
-       }}
-       min={1}
-       shouldAnimateNumber
-       max={predictions?.length}
-       shouldDisplayValue={false}
-     />
-      </div>
-   
-      <StreamChart />
-      <div style={{marginBottom:"250px"}} />
-     
 
+      <SliderContainer id="slider-track">
+        <Slider
+          value={frame}
+          onChange={(value) => {
+            setFrame(value - 1);
+            videoRef.current.currentTime =
+              (predictions[frame].time - predictions[0].time) / 1000;
+          }}
+          min={1}
+          shouldAnimateNumber
+          max={predictions?.length}
+          shouldDisplayValue={false}
+        />
+      </SliderContainer>
+      <Spacer />
+      <label>Knees</label>
+      <Spacer />
+      <LineChartComponent data={angles} dataKeys={["rightKnee", "leftKnee"]} />
+      <Spacer />
+      <label>Elbows</label>
+      <Spacer />
+      <LineChartComponent data={angles} dataKeys={["rightElbow", "leftElbow"]} />
+      <Spacer />
+      <label>Back</label>
+      <Spacer />
+      <LineChartComponent data={angles} dataKeys={ ["back"]} />
       <ButtonContainer zIndex={99}>
         <NewBtn onClick={() => navigate("/")}>New</NewBtn>
       </ButtonContainer>
@@ -146,4 +180,10 @@ const ControlsContainer = styled(AnalyzeBtnContainer)`
     min-width: 30px;
     text-align: center;
   }
+`;
+
+const SliderContainer = styled.div`
+  z-index: 999999999999;
+  background: white;
+  height: 15px;
 `;

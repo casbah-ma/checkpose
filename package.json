@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@mediapipe/pose": "^0.5.1635988162",
-    "@nivo/core": "^0.80.0",
-    "@nivo/stream": "^0.80.0",
     "@tensorflow-models/pose-detection": "^2.0.0",
     "@tensorflow/tfjs": "^4.2.0",
     "@tensorflow/tfjs-backend-webgl": "^4.2.0",
@@ -22,6 +20,7 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "react-webcam": "^7.0.1",
+    "recharts": "^2.5.0",
     "styled-components": "^5.3.6",
     "use-timer": "^2.0.1",
     "web-vitals": "^2.1.4",
