@@ -149,7 +149,8 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         )}
 
-        <>
+        {!vidUrl && 
+         <>
           <Title>OR</Title>
           <input
               type="file"
@@ -159,6 +160,8 @@ const WebcamStreamCapture = () => {
             />
           </>
 
+        }
+        
       </WebCamContainer>
       
       {vidUrl && (

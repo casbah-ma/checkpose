@@ -1,6 +1,7 @@
-import React from "react";
+import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import useKeyPress from "hooks/useKeyPress";
 import Layout from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
 const TEXT = [
@@ -15,30 +16,35 @@ const TEXT = [
   },
   {
     title: "Offline",
-    description: "Runs on your browser even without internet or a server",
+    description: "Runs on your browser without internet or a remote server",
   },
   {
     title: "Private",
-    description: "Your medias never leave your browser",
+    description: "Your video feed and body data never leave your browser",
   },
   {
-    title: "Free",
-    description: "Fork this open source at github",
+    title: "Open source",
+    description: "Fork us at Github",
   },
 ];
 
 function Intro() {
   const navigate = useNavigate();
+  const escapePress = useKeyPress("Escape")
 
-  function onSkip() {
-    navigate("/capture");
-  }
-
+  const onSkip = useCallback(() => navigate("/capture"), [navigate])
+  
+  useEffect(() => {
+    if (escapePress) {
+      onSkip()
+    }
+  }, [escapePress, onSkip])
+  
   return (
     <Layout scroll>
       <Container>
-        <Skip onClick={() => onSkip()}>Skip</Skip>
-        <Title big>Features</Title>
+        <Skip onClick={() => onSkip()}>[X] Close</Skip>
+        <Title big>Snacks</Title>
  
         {TEXT.map((t,k) => (
           <>
