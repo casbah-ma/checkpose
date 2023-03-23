@@ -53,7 +53,7 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    toast("When you press [Start] for the first time, your browser may freeze for few seconds.", {
+    toast("When you press [Start] for the first time, this app may freeze for few seconds.", {
       icon: "👏",
       style: {
         borderRadius: "10px",
@@ -62,6 +62,7 @@ const WebcamStreamCapture = () => {
       },
       duration: 4300,
     });
+
   }, []);
 
   useEffect(() => {
@@ -137,6 +138,7 @@ const WebcamStreamCapture = () => {
   return (
     <Layout bgColor="black">
       <WebCamContainer invisible={!playing && !capturing}>
+        <OverlayImage />
         <Webcam
           audio={false}
           ref={webcamRef}
@@ -276,6 +278,19 @@ export const WebCamContainer = styled(ButtonContainer)`
     height: 300px;
   }
 `;
+
+const OverlayImage = styled.div`
+   position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0 auto;
+  width: 300px;
+  height: 300px;
+  background-image: url('/background.png');
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+`
 
 const VideoComponent = styled.video`
   z-index: 999999;

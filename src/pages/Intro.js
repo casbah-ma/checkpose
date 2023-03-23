@@ -7,6 +7,7 @@ import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
 import Spacer from "components/Spacer";
 import { ButtonContainer } from "./Capture";
+import ANNOUNCEMENTS from "ANNOUNCEMENTS";
 
 const TEXT = [
   {
@@ -46,8 +47,8 @@ function Intro() {
     <Layout scroll>
       <Container>
         <News>
-          <span>Version 1.0.1</span>
-          <p>✔️ Add probability charts</p>
+          <span>{ ANNOUNCEMENTS.version }</span>
+          <p>{ ANNOUNCEMENTS.description }</p>
         </News>
 
         {TEXT.map((t, k) => (
@@ -56,8 +57,9 @@ function Intro() {
             <Paragraph>{t.description}</Paragraph>
           </div>
         ))}
-        <a href="/#" target="_blank">
-          Github
+
+        <a href="https://github.com/casbah-ma" target="_blank"  rel="noreferrer" >
+            Source Code
         </a>
       </Container>
       <Spacer top={300} />
@@ -93,7 +95,7 @@ const News = styled.div`
   padding-top:0;
   margin-bottom: 30px;
   background-color: black;
-  text-align: left;
+  
   span {
     color: black;
     background-color: white;
