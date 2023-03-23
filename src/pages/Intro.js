@@ -5,20 +5,24 @@ import useKeyPress from "hooks/useKeyPress";
 import Layout from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
-import { ButtonContainer } from "./Capture";
 import Spacer from "components/Spacer";
+import { ButtonContainer } from "./Capture";
+
 const TEXT = [
   {
     title: "Capture",
-    description: "Analyze your body movements with the comfort of a smartphone camera.",
+    description:
+      "Analyze your body movements with the comfort of a smartphone camera.",
   },
   {
     title: "Visualize",
-    description: "Understand with graphics your body’s strengths and weaknesses.",
+    description:
+      "Understand with graphics your body’s strengths and weaknesses.",
   },
   {
     title: "Offline",
-    description: "Runs on your browser without the internet or a remote server.",
+    description:
+      "Runs on your browser without the internet or a remote server.",
   },
   {
     title: "Free",
@@ -41,22 +45,25 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
-      
-      
+        <News>
+          <span>Version 1.0.1</span>
+          <p>✔️ Add probability charts</p>
+        </News>
 
         {TEXT.map((t, k) => (
-          <div  key={k + "key--"}>
+          <div key={k + "key--"}>
             <Title>{t.title}</Title>
             <Paragraph>{t.description}</Paragraph>
           </div>
         ))}
-         <img src="/bg.png" alt="abstract-bg" width="100%" height={"100%"}/>
+        <a href="/#" target="_blank">
+          Github
+        </a>
       </Container>
+      <Spacer top={300} />
       <ButtonContainer>
-        {" "}
-        <NewBtn onClick={()=>onSkip()}>Try</NewBtn>
+        <TryBtn onClick={() => onSkip()}>Try</TryBtn>
       </ButtonContainer>
-     
     </Layout>
   );
 }
@@ -72,4 +79,31 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   height: 100%;
+  a{
+    color: white;
+    margin-bottom:9px;
+  }
+`;
+
+const News = styled.div`
+  width: 300px;
+  height: auto;
+  padding: 20px;
+  padding-bottom:0;
+  padding-top:0;
+  margin-bottom: 30px;
+  background-color: black;
+  text-align: left;
+  span {
+    color: black;
+    background-color: white;
+    padding: 5px;
+    margin: 0;
+  }
+  p {
+  }
+`;
+
+const TryBtn = styled(NewBtn)`
+  box-shadow: #4caf50 4px 4px 0 0;
 `;
