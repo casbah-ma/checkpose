@@ -71,8 +71,6 @@ function Analyze(props) {
       let output = [];
       const predictionLenght = predictions.length;
 
-      console.log(predictions[1])
-
       for (let i = 0; i < predictionLenght; i++) {
         const bmap = bodyMapper(predictions[i].keypoints);
         const rightKnee = findAngle(
