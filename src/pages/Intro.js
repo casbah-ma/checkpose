@@ -17,16 +17,12 @@ const TEXT = [
     description: "Understand with graphics your body’s strengths and weaknesses.",
   },
   {
-    title: "Privacy first",
-    description: "Your video feed and body data never leave your browser.",
-  },
-  {
     title: "Offline",
     description: "Runs on your browser without the internet or a remote server.",
   },
   {
     title: "Free",
-    description: "Fork this at Github and make it your own.",
+    description: "Open-source and 100% free.",
   },
 ];
 
@@ -45,7 +41,7 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
-       
+      
       
 
         {TEXT.map((t, k) => (
@@ -54,12 +50,13 @@ function Intro() {
             <Paragraph>{t.description}</Paragraph>
           </div>
         ))}
+         <img src="/bg.png" alt="abstract-bg" width="100%" height={"100%"}/>
       </Container>
       <ButtonContainer>
         {" "}
         <NewBtn onClick={()=>onSkip()}>Try</NewBtn>
       </ButtonContainer>
-      <Spacer bottom={400} />
+     
     </Layout>
   );
 }
@@ -75,14 +72,4 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   height: 100%;
-`;
-
-const Skip = styled.button`
-  color: white;
-  font-size: 17px;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer;
-  border-bottom: 5px solid yellow;
 `;
