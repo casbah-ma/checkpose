@@ -63,8 +63,6 @@ const WebcamStreamCapture = () => {
     setPlaying(false);
     setPlayBackRate(1);
     setVidUrl(null);
-    setCapturing(true);
-    start();
     mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
       mimeType: "video/webm",
     });
@@ -73,6 +71,8 @@ const WebcamStreamCapture = () => {
       handleDataAvailable
     );
     mediaRecorderRef.current.start();
+    setCapturing(true);
+    start();
   }, [
     webcamRef,
     setCapturing,
@@ -162,21 +162,6 @@ const WebcamStreamCapture = () => {
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
           </AnalyzeBtnContainer>
         )}
-               
-
-        {!vidUrl && false && 
-         <>
-          <Title>OR</Title>
-          <input
-              type="file"
-              id="videofile"
-              name="videofile"
-              accept="video/mp4,video/x-m4v,video/webm,video/*"
-            />
-          </>
-
-        }
-        
       </WebCamContainer>
       
       {vidUrl && (
