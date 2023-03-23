@@ -5,7 +5,7 @@ import Slider from "rc-slider";
 import Layout from "components/Layout";
 import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
-import findAngle from "lib/findAngle";
+import findAngle, { findAngle2Vectors }  from "lib/findAngle";
 import { NewBtn, ButtonContainer } from "./Capture";
 import Skeleton from "components/Skeleton";
 import Spacer from "components/Spacer";
@@ -71,6 +71,8 @@ function Analyze(props) {
       let output = [];
       const predictionLenght = predictions.length;
 
+      console.log(predictions[1])
+
       for (let i = 0; i < predictionLenght; i++) {
         const bmap = bodyMapper(predictions[i].keypoints);
         const rightKnee = findAngle(
@@ -98,12 +100,21 @@ function Analyze(props) {
           bmap.rightHip.coords,
           bmap.rightKnee.coords
         );
+        const hipShoulder = findAngle2Vectors(
+          bmap.rightHip.coords,
+          bmap.leftHip.coords,
+          bmap.rightShoulder.coords,
+          bmap.leftShoulder.coords,
+        )
+
         output.push({
           rightKnee,
           leftKnee,
           rightElbow,
           leftElbow,
           back,
+          hipShoulder,
+          score: Math.round((predictions[i].score)*100),
           time: predictions[i].time - predictions[0].time,
         });
       }
@@ -164,32 +175,43 @@ function Analyze(props) {
                 shouldDisplayValue={false}
               />
             </SliderContainer>
-          </Fixed>
+          
 
+         
+          </Fixed>
+         
           <Spacer bottom={350} />
-          <label>Knees</label>
+          <label>Accuracy %</label>
+          <LineChartComponent
+            small
+            color={"red"}
+            data={angles}
+            dataKeys={["score"]}
+          />
+          <Spacer />
+          <label>Knees angles</label>
           <Spacer />
           <LineChartComponent
             data={angles}
             dataKeys={["rightKnee", "leftKnee"]}
           />
           <Spacer />
-          <label>Elbows</label>
+          <label>Elbows angles</label>
           <Spacer />
           <LineChartComponent
             data={angles}
             dataKeys={["rightElbow", "leftElbow"]}
           />
           <Spacer />
-          <label>Back</label>
+          <label>Back angle (right shoulder, right hip, right knee)</label>
           <Spacer />
           <LineChartComponent data={angles} dataKeys={["back"]} />
           <Spacer />
-          <label>Shoulder/Hips</label>
+          <label>Shoulder Hips: 0 degree angle means they are Parallel</label>
           <Spacer />
           <LineChartComponent
             data={angles}
-            dataKeys={["rightElbow", "leftElbow"]}
+            dataKeys={["hipShoulder"]}
           />
 
           <ButtonContainer zIndex={99999999}>

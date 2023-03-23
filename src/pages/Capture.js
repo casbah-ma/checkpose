@@ -44,51 +44,6 @@ const WebcamStreamCapture = () => {
     }
   };
 
-  useEffect(() => {
-    tf.setBackend("webgl")
-      .then(() => {
-        loadMoveNet(setModel);
-      })
-      .catch(() => toast.error("WebGL Not supported"));
-  }, []);
-
-  useEffect(() => {
-    toast("When you press [Start] for the first time, this app may freeze for few seconds.", {
-      icon: "👏",
-      style: {
-        borderRadius: "10px",
-        background: "#333",
-        color: "#fff",
-      },
-      duration: 4300,
-    });
-
-  }, []);
-
-  useEffect(() => {
-    const animation = requestAnimationFrame(predictionFunction);
-    return () => cancelAnimationFrame(animation);
-    //const animation = setInterval(predictionFunction, 1000 / 20);
-    //return () => clearInterval(animation);
-  }, [predictionFunction]);
-
-  useEffect(() => {
-    if (playerRef?.current?.playbackRate) {
-      playerRef.current.playbackRate = playbackRate;
-    }
-  }, [playbackRate]);
-
-  useEffect(() => {
-    if (recordedChunks.length) {
-      const blob = new Blob(recordedChunks, {
-        type: "video/webm",
-      });
-      const url = URL.createObjectURL(blob);
-      setVidUrl(url);
-      setRecordedChunks([]);
-    }
-  }, [recordedChunks]);
-
   const handleDataAvailable = useCallback(
     ({ data }) => {
       if (data.size > 0) {
@@ -135,8 +90,66 @@ const WebcamStreamCapture = () => {
     setPlaying(true);
   }, [mediaRecorderRef, setCapturing, pause]);
 
+
+  useEffect(() => {
+    tf.setBackend("webgl")
+      .then(() => {
+        loadMoveNet(setModel);
+      })
+      .catch(() => toast.error("WebGL Not supported"));
+  }, []);
+
+  useEffect(() => {
+    toast("When you press [Start] for the first time, this app may freeze for few seconds.", {
+      icon: "👏",
+      style: {
+        borderRadius: "10px",
+        background: "#333",
+        color: "#fff",
+      },
+      duration: 4300,
+    });
+
+  }, []);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(predictionFunction);
+    return () => cancelAnimationFrame(animation);
+    //const animation = setInterval(predictionFunction, 1000 / 20);
+    //return () => clearInterval(animation);
+  }, [predictionFunction]);
+
+  useEffect(() => {
+    if (playerRef?.current?.playbackRate) {
+      playerRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, {
+        type: "video/webm",
+      });
+      const url = URL.createObjectURL(blob);
+      setVidUrl(url);
+      setRecordedChunks([]);
+    }
+  }, [recordedChunks]);
+
+  useEffect(() => {
+    if (time > 1 && predictions.length < 1) {
+      toast.error(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA")
+    }
+    if (time === 10 && predictions.length < 1) {
+      handleStopCaptureClick()
+    }
+  },[time, predictions, handleStopCaptureClick])
+
+ 
+
   return (
     <Layout bgColor="black">
+      
       <WebCamContainer invisible={!playing && !capturing}>
         <OverlayImage />
         <Webcam
@@ -147,9 +160,9 @@ const WebcamStreamCapture = () => {
         {capturing && (
           <AnalyzeBtnContainer>
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
-            {time > 1 && predictions.length < 1 && " ⚠️ NO POSE DETECTED"}
           </AnalyzeBtnContainer>
         )}
+               
 
         {!vidUrl && false && 
          <>
