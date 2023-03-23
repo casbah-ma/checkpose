@@ -18,9 +18,12 @@ const TEXT = [
     description: "Runs on your browser even without internet or a server",
   },
   {
-    title: "Free forever",
-    description:
-      "Code and documentation are at github.com/opencoach",
+    title: "Private",
+    description: "Your medias never leave your browser",
+  },
+  {
+    title: "Free",
+    description: "Fork this open source at github",
   },
 ];
 
@@ -35,6 +38,8 @@ function Intro() {
     <Layout scroll>
       <Container>
         <Skip onClick={() => onSkip()}>Skip</Skip>
+        <Title big>Features</Title>
+ 
         {TEXT.map((t,k) => (
           <>
             <Title key={k+'key--'}>{t.title}</Title>

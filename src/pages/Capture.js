@@ -10,6 +10,7 @@ import Slider from "rc-slider";
 import { useTimer } from "use-timer";
 import loadMoveNet from "lib/loadMoveNet";
 import Layout from "components/Layout";
+import { Title } from "components/Typo";
 import videoConstraints from "constants/videoConstraints";
 
 const WebcamStreamCapture = () => {
@@ -147,6 +148,17 @@ const WebcamStreamCapture = () => {
             {time > 1 && predictions.length < 1 && " ⚠️ NO POSE DETECTED"}
           </AnalyzeBtnContainer>
         )}
+
+        <>
+          <Title>OR</Title>
+          <input
+              type="file"
+              id="videofile"
+              name="videofile"
+              accept="video/mp4,video/x-m4v,video/webm,video/*"
+            />
+          </>
+
       </WebCamContainer>
       
       {vidUrl && (
@@ -174,15 +186,6 @@ const WebcamStreamCapture = () => {
               />
             </>
           )}
-
-          <>
-          <input
-              type="file"
-              id="videofile"
-              name="videofile"
-              accept="video/mp4,video/x-m4v,video/*"
-            />
-          </>
 
           {predictions.length ? (
             <AnalyzeBtnContainer

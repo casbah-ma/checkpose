@@ -2,7 +2,9 @@ import styled from "styled-components";
 
 const Title = styled.h1`
   color: white;
-  margin:0;
+  margin:${props => props.big ? '20px' : 0} ;
+  font-size:${props => props.big ? '56px' : '26px'} ;
+  border-bottom: ${props => props.big ? '1px solid white' : 'none'} ;
 `
 
 const Paragraph = styled.p`
