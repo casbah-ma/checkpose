@@ -9,24 +9,24 @@ import { ButtonContainer } from "./Capture";
 import Spacer from "components/Spacer";
 const TEXT = [
   {
-    title: "Analyze",
-    description: "Analyze your body movements with the comfort of a smartphone",
+    title: "Capture",
+    description: "Analyze your body movements with the comfort of a smartphone camera.",
   },
   {
     title: "Visualize",
-    description: "Understand your body’s strengths and weaknesses",
+    description: "Understand with graphics your body’s strengths and weaknesses.",
+  },
+  {
+    title: "Privacy first",
+    description: "Your video feed and body data never leave your browser.",
   },
   {
     title: "Offline",
-    description: "Runs on your browser without internet or a remote server",
+    description: "Runs on your browser without the internet or a remote server.",
   },
   {
-    title: "Private",
-    description: "Your video feed and body data never leave your browser",
-  },
-  {
-    title: "Open source",
-    description: "Fork us at Github",
+    title: "Free",
+    description: "Fork this at Github and make it your own.",
   },
 ];
 
@@ -59,7 +59,7 @@ function Intro() {
         {" "}
         <NewBtn onClick={()=>onSkip()}>Try</NewBtn>
       </ButtonContainer>
-      <Spacer bottom={200} />
+      <Spacer bottom={400} />
     </Layout>
   );
 }

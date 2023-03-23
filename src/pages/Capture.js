@@ -53,14 +53,14 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    toast("When you press [New], your browser may hang for few seconds.", {
+    toast("When you press [Start] for the first time, your browser may freeze for few seconds.", {
       icon: "👏",
       style: {
         borderRadius: "10px",
         background: "#333",
         color: "#fff",
       },
-      duration: 3000,
+      duration: 4300,
     });
   }, []);
 
