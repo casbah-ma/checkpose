@@ -1,6 +1,6 @@
 const videoConstraints = {
     facingMode: "environment",
-    frameRate: { max: 60 },
+    frameRate: { max: 30 },
     width: 300,
     height: 300,
     

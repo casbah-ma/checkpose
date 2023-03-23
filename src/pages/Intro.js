@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import useKeyPress from "hooks/useKeyPress";
 import Layout from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
+import { NewBtn } from "./Capture";
+import { ButtonContainer } from "./Capture";
+import Spacer from "components/Spacer";
 const TEXT = [
   {
     title: "Analyze",
@@ -11,8 +14,7 @@ const TEXT = [
   },
   {
     title: "Visualize",
-    description:
-      "Understand your body’s strengths and weaknesses",
+    description: "Understand your body’s strengths and weaknesses",
   },
   {
     title: "Offline",
@@ -30,29 +32,34 @@ const TEXT = [
 
 function Intro() {
   const navigate = useNavigate();
-  const escapePress = useKeyPress("Escape")
+  const escapePress = useKeyPress("Escape");
 
-  const onSkip = useCallback(() => navigate("/capture"), [navigate])
-  
+  const onSkip = useCallback(() => navigate("/capture"), [navigate]);
+
   useEffect(() => {
     if (escapePress) {
-      onSkip()
+      onSkip();
     }
-  }, [escapePress, onSkip])
-  
+  }, [escapePress, onSkip]);
+
   return (
     <Layout scroll>
       <Container>
-        <Skip onClick={() => onSkip()}>[X] Close</Skip>
-        <Title big>Snacks</Title>
- 
-        {TEXT.map((t,k) => (
+       
+      
+
+        {TEXT.map((t, k) => (
           <>
-            <Title key={k+'key--'}>{t.title}</Title>
+            <Title key={k + "key--"}>{t.title}</Title>
             <Paragraph>{t.description}</Paragraph>
           </>
         ))}
       </Container>
+      <ButtonContainer>
+        {" "}
+        <NewBtn onClick={()=>onSkip()}>Try</NewBtn>
+      </ButtonContainer>
+      <Spacer bottom={200} />
     </Layout>
   );
 }
@@ -64,7 +71,7 @@ const Container = styled.div`
   padding: 20px;
   text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   height: 100%;
@@ -77,5 +84,5 @@ const Skip = styled.button`
   top: 10px;
   right: 20px;
   cursor: pointer;
-  border-bottom:5px solid yellow;
+  border-bottom: 5px solid yellow;
 `;
