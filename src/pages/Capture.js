@@ -149,7 +149,7 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         )}
 
-        {!vidUrl && 
+        {!vidUrl && false && 
          <>
           <Title>OR</Title>
           <input
@@ -210,7 +210,7 @@ const WebcamStreamCapture = () => {
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-            <NewBtn onClick={handleStartCaptureClick}>New</NewBtn>
+            <NewBtn onClick={handleStartCaptureClick}>Start</NewBtn>
         )}
       </ButtonContainer>
     </Layout>

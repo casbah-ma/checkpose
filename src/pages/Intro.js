@@ -49,10 +49,10 @@ function Intro() {
       
 
         {TEXT.map((t, k) => (
-          <>
-            <Title key={k + "key--"}>{t.title}</Title>
+          <div  key={k + "key--"}>
+            <Title>{t.title}</Title>
             <Paragraph>{t.description}</Paragraph>
-          </>
+          </div>
         ))}
       </Container>
       <ButtonContainer>
