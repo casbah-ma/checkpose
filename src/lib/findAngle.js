@@ -14,26 +14,27 @@ export default function findAngle(A, B, C) {
     var BC = Math.sqrt(Math.pow(B[0]-C[0],2)+ Math.pow(B[1]-C[1],2)); 
     var AC = Math.sqrt(Math.pow(C[0]-A[0],2)+ Math.pow(C[1]-A[1],2));
     
-    return Math.round(Math.acos((BC*BC+AB*AB-AC*AC) / (2*BC*AB)) * (180 / Math.PI));   
+    return Math.round(180-Math.acos((BC*BC+AB*AB-AC*AC) / (2*BC*AB)) * (180 / Math.PI));   
 }
 
-
 /**
- * a====b
- *    c==__d
- * 
+ * Find angle from 4 points (2 vectors)
  * @param {*} A 
  * @param {*} B 
  * @param {*} C 
  * @param {*} D 
+ * @returns 
  */
-export function findAngle2Vectors(A, B, C, D) {
-    var vectorAB = [A[1]-B[1], A[0] - B[0]]
-    var vectorCD = [C[1] - D[1], C[0] - D[0]]
-    const x1 = vectorAB[0]
-    const x2 = vectorAB[1]
-    const y1 = vectorCD[0]
-    const y2 = vectorCD[1]
-      
-    return (Math.atan2(x1*y2-y1*x2,x1*x2+y1*y2)* (180 / Math.PI));
-}
+export function calculateAngle2Vectors(A, B, C, D) {
+    // Calculate vector AB
+    let vectorAB = [B[0] - A[0], B[1] - A[1]];
+    // Calculate vector CD
+    let vectorCD = [D[0] - C[0], D[1] - C[1]];
+    // Calculate dot product
+    let dotProduct = vectorAB[0] * vectorCD[0] + vectorAB[1] * vectorCD[1];
+    // Calculate magnitude of vectorAB and vectorCD
+    let vectorABMagnitude = Math.sqrt(Math.pow(vectorAB[0], 2) + Math.pow(vectorAB[1], 2));
+    let vectorCDMagnitude = Math.sqrt(Math.pow(vectorCD[0], 2) + Math.pow(vectorCD[1], 2));
+    // Calculate and return angle
+    return Math.round(Math.acos(dotProduct / (vectorABMagnitude * vectorCDMagnitude)) * (180/Math.PI));
+  }

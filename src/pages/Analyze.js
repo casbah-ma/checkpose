@@ -5,7 +5,7 @@ import Slider from "rc-slider";
 import Layout from "components/Layout";
 import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
-import findAngle, { findAngle2Vectors }  from "lib/findAngle";
+import findAngle, { calculateAngle2Vectors }  from "lib/findAngle";
 import { NewBtn, ButtonContainer } from "./Capture";
 import Skeleton from "components/Skeleton";
 import Spacer from "components/Spacer";
@@ -95,12 +95,17 @@ function Analyze(props) {
           bmap.leftElbow.coords,
           bmap.leftWrist.coords
         );
-        const back = findAngle(
+        const backRight = findAngle(
           bmap.rightShoulder.coords,
           bmap.rightHip.coords,
           bmap.rightKnee.coords
         );
-        const hipShoulder = findAngle2Vectors(
+        const backLeft = findAngle(
+          bmap.leftShoulder.coords,
+          bmap.leftHip.coords,
+          bmap.leftKnee.coords
+        );
+        const hipShoulder = calculateAngle2Vectors(
           bmap.rightHip.coords,
           bmap.leftHip.coords,
           bmap.rightShoulder.coords,
@@ -112,7 +117,8 @@ function Analyze(props) {
           leftKnee,
           rightElbow,
           leftElbow,
-          back,
+          backRight,
+          backLeft,
           hipShoulder,
           score: Math.round((predictions[i].score)*100),
           time: predictions[i].time - predictions[0].time,
@@ -203,17 +209,16 @@ function Analyze(props) {
             dataKeys={["rightElbow", "leftElbow"]}
           />
           <Spacer />
-          <label>Back angle (right shoulder, right hip, right knee)</label>
+          <label>Back angle (shoulder, hip, knee)</label>
           <Spacer />
-          <LineChartComponent data={angles} dataKeys={["back"]} />
+          <LineChartComponent data={angles} dataKeys={["backRight", "backLeft"]} />
           <Spacer />
-          <label>Shoulder Hips: 0 degree angle means they are Parallel</label>
+          <label>Shoulder Hips parallelism: 0 degree angle means they are Parallel</label>
           <Spacer />
           <LineChartComponent
             data={angles}
             dataKeys={["hipShoulder"]}
           />
-
           <ButtonContainer zIndex={99999999}>
             <NewBtn onClick={() => navigate("/capture")}>New</NewBtn>
           </ButtonContainer>

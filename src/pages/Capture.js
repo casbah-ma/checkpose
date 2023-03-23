@@ -10,7 +10,6 @@ import Slider from "rc-slider";
 import { useTimer } from "use-timer";
 import loadMoveNet from "lib/loadMoveNet";
 import Layout from "components/Layout";
-import { Title } from "components/Typo";
 import videoConstraints from "constants/videoConstraints";
 
 const WebcamStreamCapture = () => {

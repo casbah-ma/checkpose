@@ -1,6 +1,6 @@
 const ANNOUNCEMENTS = {
-    version: "Version 1.0.1",
-    description: "✔️ Prediction accuracy graph"
+    version: "Version 1.1.0",
+    description: "✔️ Add more stats"
 }
 
 export default ANNOUNCEMENTS
