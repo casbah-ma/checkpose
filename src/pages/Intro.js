@@ -6,7 +6,6 @@ import Layout, { Footer } from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
 import Spacer from "components/Spacer";
-import { ButtonContainer } from "./Capture";
 import PACKAGE from "../../package.json";
 
 const TEXT = [
@@ -83,3 +82,14 @@ const Container = styled.div`
 const TryBtn = styled(NewBtn)`
   box-shadow: #4caf50 4px 4px 0 0;
 `;
+
+const ButtonContainer = styled.div`
+  position: fixed;
+  bottom: 50px;
+  right: 0;
+  width: 100vw;
+  text-align: center;
+  z-index: ${(props) => props.zIndex || 1};
+  background: ${(props) => props.background};
+`;
+

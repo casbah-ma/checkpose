@@ -39,7 +39,10 @@ const WebcamStreamCapture = () => {
           ...predictions,
           { ...videoPredictions[0], time: Date.now() },
         ]);
-      } else if(predictions?.length && predictions[predictions.length - 1]?.keypoints) {
+      } else if (
+        predictions?.length &&
+        predictions[predictions.length - 1]?.keypoints
+      ) {
         // Freeze the coordinates
         setPredictions([
           ...predictions,
@@ -216,8 +219,12 @@ const WebcamStreamCapture = () => {
           ) : null}
         </WebCamContainer>
       )}
+         <HomeButton>
+          <Link to="/">←</Link>
+        </HomeButton>
 
       <ButtonContainer zIndex={99}>
+     
         {capturing ? (
           <>
             <Button onClick={handleStopCaptureClick}>Stop</Button>
@@ -232,7 +239,7 @@ const WebcamStreamCapture = () => {
 
 export default WebcamStreamCapture;
 
-export const ButtonContainer = styled.div`
+const ButtonContainer = styled.div`
   position: fixed;
   bottom: 50px;
   right: 0;
@@ -240,6 +247,28 @@ export const ButtonContainer = styled.div`
   text-align: center;
   z-index: ${(props) => props.zIndex || 1};
   background: ${(props) => props.background};
+`;
+
+const HomeButton = styled.button`
+  text-align: center;
+  z-index: ${(props) => props.zIndex || 1};
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  box-shadow: black 5px 3px 0 0;
+  background-color: #202020;
+  position: absolute;
+  top: 0;
+  left:0;
+  margin-right: 20px;
+  a {
+    line-height:15px ;
+    font-size: 20px;
+    font-weight: 100;
+    text-decoration: none;
+    text-align: center;
+    color: white
+  }
 `;
 
 const Button = styled.button`
@@ -255,6 +284,7 @@ const Button = styled.button`
   box-shadow: #422800 4px 4px 0 0;
   :hover {
     background-color: #ff3433;
+    transform: translate(1px, 1px);
   }
   :active {
     box-shadow: #422800 2px 2px 0 0;

@@ -6,7 +6,7 @@ import Layout from "components/Layout";
 import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
 import findAngle, { calculateAngle2Vectors }  from "lib/findAngle";
-import { NewBtn, ButtonContainer } from "./Capture";
+import { NewBtn } from "./Capture";
 import Skeleton from "components/Skeleton";
 import Spacer from "components/Spacer";
 
@@ -315,3 +315,15 @@ const Fixed = styled.div`
   max-width: 600px;
   margin: 0 auto;
 `;
+
+
+const ButtonContainer = styled.div`
+  position: fixed;
+  bottom: 50px;
+  right: 0;
+  width: 100vw;
+  text-align: center;
+  z-index: ${(props) => props.zIndex || 1};
+  background: ${(props) => props.background};
+`;
+
