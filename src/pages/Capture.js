@@ -11,6 +11,7 @@ import { useTimer } from "use-timer";
 import loadMoveNet from "lib/loadMoveNet";
 import Layout from "components/Layout";
 import videoConstraints from "constants/videoConstraints";
+import { Paragraph } from "components/Typo";
 
 const WebcamStreamCapture = () => {
   const { time, start, pause, reset } = useTimer();
@@ -161,6 +162,8 @@ const WebcamStreamCapture = () => {
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
           </AnalyzeBtnContainer>
         )}
+
+        <Paragraph>💡 For better results, try Keep your subject within the Davinci Vitruvian Man</Paragraph>
       </WebCamContainer>
       
       {vidUrl && (

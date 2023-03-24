@@ -7,7 +7,7 @@ import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
 import Spacer from "components/Spacer";
 import { ButtonContainer } from "./Capture";
-import ANNOUNCEMENTS from "ANNOUNCEMENTS";
+import PACKAGE from '../../package.json'
 
 const TEXT = [
   {
@@ -46,22 +46,19 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
-        <News>
-          <span>{ ANNOUNCEMENTS.version }</span>
-          <p>{ ANNOUNCEMENTS.description }</p>
-        </News>
-
         {TEXT.map((t, k) => (
-          <div key={k + "key--"}>
+          <div key={k}>
             <Title>{t.title}</Title>
             <Paragraph>{t.description}</Paragraph>
           </div>
         ))}
 
-        <a href="https://github.com/casbah-ma" target="_blank"  rel="noreferrer" >
-            Source Code
+        <a href="https://github.com/casbah-ma" target="_blank" rel="noreferrer">
+          Version {PACKAGE.version}
         </a>
+        
       </Container>
+
       <Spacer top={300} />
       <ButtonContainer>
         <TryBtn onClick={() => onSkip()}>Try</TryBtn>
@@ -81,28 +78,9 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   height: 100%;
-  a{
+  a {
     color: white;
-    margin-bottom:9px;
-  }
-`;
-
-const News = styled.div`
-  width: 300px;
-  height: auto;
-  padding: 20px;
-  padding-bottom:0;
-  padding-top:0;
-  margin-bottom: 30px;
-  background-color: black;
-  
-  span {
-    color: black;
-    background-color: white;
-    padding: 5px;
-    margin: 0;
-  }
-  p {
+    margin-bottom: 9px;
   }
 `;
 
