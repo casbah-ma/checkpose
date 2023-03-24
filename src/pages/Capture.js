@@ -90,7 +90,6 @@ const WebcamStreamCapture = () => {
     setPlaying(true);
   }, [mediaRecorderRef, setCapturing, pause]);
 
-
   useEffect(() => {
     tf.setBackend("webgl")
       .then(() => {
@@ -100,16 +99,18 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    toast("When you press [Start] for the first time, this app may freeze for few seconds.", {
-      icon: "👏",
-      style: {
-        borderRadius: "10px",
-        background: "#333",
-        color: "#fff",
-      },
-      duration: 4300,
-    });
-
+    toast(
+      "When you press [Start] for the first time, this app may freeze for few seconds.",
+      {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+        duration: 4300,
+      }
+    );
   }, []);
 
   useEffect(() => {
@@ -138,18 +139,15 @@ const WebcamStreamCapture = () => {
 
   useEffect(() => {
     if (time > 1 && predictions.length < 1) {
-      toast.error(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA")
+      toast.error(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA");
     }
     if (time === 10 && predictions.length < 1) {
-      handleStopCaptureClick()
+      handleStopCaptureClick();
     }
-  },[time, predictions, handleStopCaptureClick])
-
- 
+  }, [time, predictions, handleStopCaptureClick]);
 
   return (
     <Layout bgColor="black">
-      
       <WebCamContainer invisible={!playing && !capturing}>
         <OverlayImage />
         <Webcam
@@ -162,10 +160,14 @@ const WebcamStreamCapture = () => {
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
           </AnalyzeBtnContainer>
         )}
-
-        <Paragraph>💡 For better results, try Keep your subject within the Davinci Vitruvian Man</Paragraph>
+        {!vidUrl && (
+          <Paragraph>
+            💡 For better results, try Keep your subject within the Davinci
+            Vitruvian Man
+          </Paragraph>
+        )}
       </WebCamContainer>
-      
+
       {vidUrl && (
         <WebCamContainer>
           <VideoComponent
@@ -205,14 +207,14 @@ const WebcamStreamCapture = () => {
           ) : null}
         </WebCamContainer>
       )}
-    
+
       <ButtonContainer zIndex={99}>
         {capturing ? (
           <>
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-            <NewBtn onClick={handleStartCaptureClick}>Start</NewBtn>
+          <NewBtn onClick={handleStartCaptureClick}>Start</NewBtn>
         )}
       </ButtonContainer>
     </Layout>
@@ -280,17 +282,17 @@ export const WebCamContainer = styled(ButtonContainer)`
 `;
 
 const OverlayImage = styled.div`
-   position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   margin: 0 auto;
   width: 300px;
   height: 300px;
-  background-image: url('/background.png');
-  background-size:contain;
-  background-position:center;
-  background-repeat:no-repeat;
-`
+  background-image: url("/background.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
 
 const VideoComponent = styled.video`
   z-index: 999999;

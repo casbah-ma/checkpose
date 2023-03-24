@@ -46,6 +46,8 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
+        <img src="/jump.gif" height="400px" width='auto' alt="jump"/>
+        <Spacer bottom={50} />
         {TEXT.map((t, k) => (
           <div key={k}>
             <Title>{t.title}</Title>
@@ -59,7 +61,7 @@ function Intro() {
         
       </Container>
 
-      <Spacer top={300} />
+      <Spacer top={600} />
       <ButtonContainer>
         <TryBtn onClick={() => onSkip()}>Try</TryBtn>
       </ButtonContainer>
