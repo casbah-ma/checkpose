@@ -46,17 +46,11 @@ serviceWorkerRegistration.register({
 
     if (waitingServiceWorker) {
       waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-      toast.promise(
-        delay(window.location.reload(), 2500),
-        {
-          loading: "Updating...",
-          success: <b>Updated</b>,
-          error: <b>Update aborded</b>,
-        }
-      );
+      toast("New version available")
+      setTimeout(()=>window.location.reload(),2500)
     }
-  },
-});
+  }
+})
 
 function delay(t) {
   return new Promise(function (resolve) {
