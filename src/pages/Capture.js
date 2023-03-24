@@ -258,7 +258,7 @@ const HomeButton = styled.button`
   box-shadow: black 5px 3px 0 0;
   background-color: #202020;
   position: absolute;
-  top: 0;
+  bottom: 0;
   left:0;
   margin-right: 20px;
   a {
