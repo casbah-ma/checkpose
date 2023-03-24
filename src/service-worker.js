@@ -51,7 +51,7 @@ registerRoute(
 registerRoute(
   // Add in any other file extensions or routing criteria as needed.
   ({ url }) =>
-    url.origin === self.location.origin && url.pathname.endsWith('.png'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    url.origin === self.location.origin && url.pathname.endsWith('.png'),
   new StaleWhileRevalidate({
     cacheName: 'images',
     plugins: [
@@ -85,6 +85,8 @@ self.addEventListener('install', e => {
       const resources = [];
       
       resources.push(`${MODEL_PREFIX}/model.json`);
+      resources.push(`${MODEL_PREFIX}/model.json?tfjs-format=file`);
+      
       for (let i = 1; i <= NUM_SHARDS; i++) {
         resources.push(SHARDS_NAMING_SCHEME(i))
       }
