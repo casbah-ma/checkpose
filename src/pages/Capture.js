@@ -30,7 +30,6 @@ const WebcamStreamCapture = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
-    setErrorMessage(null);
     try {
       const videoPredictions = await model.estimatePoses(
         webcamRef.current.video
@@ -40,7 +39,7 @@ const WebcamStreamCapture = () => {
           ...predictions,
           { ...videoPredictions[0], time: Date.now() },
         ]);
-      } else {
+      } else if(predictions?.length && predictions[predictions.length - 1]?.keypoints) {
         // Freeze the coordinates
         setPredictions([
           ...predictions,
@@ -62,6 +61,8 @@ const WebcamStreamCapture = () => {
   );
 
   const handleStartCaptureClick = useCallback(() => {
+    setErrorMessage(null);
+
     if (vidUrl && window?.URL?.revokeObjectURL) {
       window.URL.revokeObjectURL(vidUrl);
     }
@@ -142,7 +143,7 @@ const WebcamStreamCapture = () => {
       handleStopCaptureClick();
       setErrorMessage(null);
     }
-  }, [time, predictions, handleStopCaptureClick]);
+  }, [time, predictions, handleStopCaptureClick, setErrorMessage]);
 
   return (
     <Layout bgColor="black">
