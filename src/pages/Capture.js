@@ -147,6 +147,7 @@ const WebcamStreamCapture = () => {
         )}
         {!vidUrl && (
           <>
+            <Spacer top={20} />
             <ToolTip>
               💡 For better results, try Keep your subject within the Davinci
               Vitruvian Man
@@ -326,9 +327,9 @@ export const AnalyzeBtnContainer = styled(Link)`
 `;
 
 const ToolTip = styled(Paragraph)`
-  background-color: rgba(0,0,0,.5) ;
   padding:10px;
-  border-radius:10px;
-  border:1px solid black;
-
+  border:1px solid #140e0e14;
+  margin:0 ;
+  margin-bottom:5px;
+  opacity:.9;
 `
