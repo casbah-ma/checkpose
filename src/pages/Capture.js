@@ -38,6 +38,12 @@ const WebcamStreamCapture = () => {
           ...predictions,
           { ...videoPredictions[0], time: Date.now() },
         ]);
+      } else {
+        // Freeze the coordinates
+        setPredictions([
+          ...predictions,
+          { ...predictions[predictions.length-1], time: Date.now() },
+        ]);
       }
     } catch (error) {
       toast.error(error);
