@@ -14,7 +14,7 @@ import videoConstraints from "constants/videoConstraints";
 import { Paragraph } from "components/Typo";
 
 const WebcamStreamCapture = () => {
-  const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const { time, start, pause, reset } = useTimer();
   const [capturing, setCapturing] = useState(false);
   const [playing, setPlaying] = useState(true);
@@ -27,14 +27,10 @@ const WebcamStreamCapture = () => {
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
-  useEffect(() => {
-    setPredictions([]);
-  }, [predictions]);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
-    setError(null);
+    setErrorMessage(null);
     try {
       const videoPredictions = await model.estimatePoses(
         webcamRef.current.video
@@ -103,6 +99,10 @@ const WebcamStreamCapture = () => {
   }, [mediaRecorderRef, setCapturing, pause]);
 
   useEffect(() => {
+    setPredictions([]);
+  }, []);
+
+  useEffect(() => {
     tf.setBackend("webgl")
       .then(() => {
         loadMoveNet(setModel);
@@ -136,11 +136,11 @@ const WebcamStreamCapture = () => {
 
   useEffect(() => {
     if (time > 1 && predictions.length < 1) {
-      setError(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA");
+      setErrorMessage(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA");
     }
     if (time === 10 && predictions.length < 1) {
       handleStopCaptureClick();
-      setError(null);
+      setErrorMessage(null);
     }
   }, [time, predictions, handleStopCaptureClick]);
 
@@ -158,7 +158,9 @@ const WebcamStreamCapture = () => {
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
           </AnalyzeBtnContainer>
         )}
-        {!vidUrl && error && <ErrorComponent>{error}</ErrorComponent>}
+        {!vidUrl && errorMessage && (
+          <ErrorComponent>{errorMessage}</ErrorComponent>
+        )}
         {!vidUrl && (
           <>
             <Spacer top={20} />
@@ -349,6 +351,6 @@ const ToolTip = styled(Paragraph)`
 `;
 
 const ErrorComponent = styled(ToolTip)`
-  background:#ff4a4a ;
-  color: white
-`
+  background: #ff4a4a;
+  color: white;
+`;
