@@ -99,21 +99,6 @@ const WebcamStreamCapture = () => {
   }, []);
 
   useEffect(() => {
-    toast(
-      "When you press [Start] for the first time, this app may freeze for few seconds.",
-      {
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-        duration: 4300,
-      }
-    );
-  }, []);
-
-  useEffect(() => {
     const animation = requestAnimationFrame(predictionFunction);
     return () => cancelAnimationFrame(animation);
     //const animation = setInterval(predictionFunction, 1000 / 20);
@@ -161,10 +146,16 @@ const WebcamStreamCapture = () => {
           </AnalyzeBtnContainer>
         )}
         {!vidUrl && (
-          <Paragraph>
-            💡 For better results, try Keep your subject within the Davinci
-            Vitruvian Man
-          </Paragraph>
+          <>
+            <ToolTip>
+              💡 For better results, try Keep your subject within the Davinci
+              Vitruvian Man
+            </ToolTip>
+            <ToolTip>
+            💡 When you press [Start] for the first time, this app may freeze for
+              few seconds.
+            </ToolTip>
+          </>
         )}
       </WebCamContainer>
 
@@ -333,3 +324,11 @@ export const AnalyzeBtnContainer = styled(Link)`
     height: 100%;
   }
 `;
+
+const ToolTip = styled(Paragraph)`
+  background-color: rgba(0,0,0,.5) ;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid black;
+
+`
