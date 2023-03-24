@@ -74,9 +74,11 @@ self.addEventListener('message', (event) => {
 const CACHE_NAME = 'opencoach-tf';
 // Location of all the shards, i.e. all the files next to your model.json file.
 const MODEL_PREFIX = 'https://storage.googleapis.com/tfhub-tfjs-modules/google/tfjs-model/movenet/singlepose/thunder/4';
+const MODEL_TFHUB_PREFIX = 'https://tfhub.dev/google/tfjs-model/movenet/singlepose/thunder/4'
 const NUM_SHARDS = 3;
 // Make sure your shards match this naming scheme (you might not have an extension, for example)
 const SHARDS_NAMING_SCHEME = (i) => `${MODEL_PREFIX}/group1-shard${i}of${NUM_SHARDS}.bin`;
+const SHARDS_NAMING_TFHUB_SCHEME = (i) => `${MODEL_TFHUB_PREFIX}/group1-shard${i}of${NUM_SHARDS}.bin`;
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -86,9 +88,12 @@ self.addEventListener('install', e => {
       
       resources.push(`${MODEL_PREFIX}/model.json`);
       resources.push(`${MODEL_PREFIX}/model.json?tfjs-format=file`);
+      resources.push(`${MODEL_TFHUB_PREFIX}/model.json`);
+      resources.push(`${MODEL_TFHUB_PREFIX}/model.json?tfjs-format=file`);
       
       for (let i = 1; i <= NUM_SHARDS; i++) {
         resources.push(SHARDS_NAMING_SCHEME(i))
+        resources.push(SHARDS_NAMING_TFHUB_SCHEME(i))
       }
   
       // If you have other local files you want to cache, like your index.html or style.css,
