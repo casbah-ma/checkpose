@@ -2,12 +2,12 @@ import { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useKeyPress from "hooks/useKeyPress";
-import Layout from "components/Layout";
+import Layout, { Footer } from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
 import Spacer from "components/Spacer";
 import { ButtonContainer } from "./Capture";
-import PACKAGE from '../../package.json'
+import PACKAGE from "../../package.json";
 
 const TEXT = [
   {
@@ -46,7 +46,7 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
-        <img src="/jump.gif" height="400px" width='auto' alt="jump"/>
+        <img src="/jump.gif" height="400px" width="auto" alt="jump" />
         <Spacer bottom={50} />
         {TEXT.map((t, k) => (
           <div key={k}>
@@ -55,16 +55,15 @@ function Intro() {
           </div>
         ))}
 
+        <ButtonContainer>
+          <TryBtn onClick={() => onSkip()}>Try</TryBtn>
+        </ButtonContainer>
+      </Container>
+      <Footer>
         <a href="https://github.com/casbah-ma" target="_blank" rel="noreferrer">
           Version {PACKAGE.version}
         </a>
-        
-      </Container>
-
-      <Spacer top={600} />
-      <ButtonContainer>
-        <TryBtn onClick={() => onSkip()}>Try</TryBtn>
-      </ButtonContainer>
+      </Footer>
     </Layout>
   );
 }
@@ -72,18 +71,13 @@ function Intro() {
 export default Intro;
 
 const Container = styled.div`
-  color: white;
   padding: 20px;
   text-align: center;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  height: 100%;
-  a {
-    color: white;
-    margin-bottom: 9px;
-  }
+  height: auto;
 `;
 
 const TryBtn = styled(NewBtn)`
