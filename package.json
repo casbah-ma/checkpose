@@ -1,6 +1,6 @@
 {
   "name": "training-app",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "dependencies": {
     "@mediapipe/pose": "^0.5.1635988162",
