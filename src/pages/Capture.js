@@ -14,6 +14,7 @@ import videoConstraints from "constants/videoConstraints";
 import { Paragraph } from "components/Typo";
 
 const WebcamStreamCapture = () => {
+  const [error, setError] = useState(null);
   const { time, start, pause, reset } = useTimer();
   const [capturing, setCapturing] = useState(false);
   const [playing, setPlaying] = useState(true);
@@ -26,9 +27,14 @@ const WebcamStreamCapture = () => {
   const playerRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
+  useEffect(() => {
+    setPredictions([]);
+  }, [predictions]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const predictionFunction = async () => {
     if (!model || !webcamRef?.current?.video || !capturing) return;
+    setError(null);
     try {
       const videoPredictions = await model.estimatePoses(
         webcamRef.current.video
@@ -42,7 +48,7 @@ const WebcamStreamCapture = () => {
         // Freeze the coordinates
         setPredictions([
           ...predictions,
-          { ...predictions[predictions.length-1], time: Date.now() },
+          { ...predictions[predictions.length - 1], time: Date.now() },
         ]);
       }
     } catch (error) {
@@ -130,10 +136,11 @@ const WebcamStreamCapture = () => {
 
   useEffect(() => {
     if (time > 1 && predictions.length < 1) {
-      toast.error(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA");
+      setError(time < 5 ? "⚠️ NO POSE DETECTED" : "⚠️ STOPPING CAMERA");
     }
     if (time === 10 && predictions.length < 1) {
       handleStopCaptureClick();
+      setError(null);
     }
   }, [time, predictions, handleStopCaptureClick]);
 
@@ -151,6 +158,7 @@ const WebcamStreamCapture = () => {
             {time < 1 ? "⚙️ Warming UP" : ` 🔴 ${time}s`}
           </AnalyzeBtnContainer>
         )}
+        {!vidUrl && error && <ErrorComponent>{error}</ErrorComponent>}
         {!vidUrl && (
           <>
             <Spacer top={20} />
@@ -159,8 +167,8 @@ const WebcamStreamCapture = () => {
               Vitruvian Man
             </ToolTip>
             <ToolTip>
-            💡 When you press [Start] for the first time, this app may freeze for
-              few seconds.
+              💡 When you press [Start] for the first time, this app may freeze
+              for few seconds.
             </ToolTip>
           </>
         )}
@@ -333,9 +341,14 @@ export const AnalyzeBtnContainer = styled(Link)`
 `;
 
 const ToolTip = styled(Paragraph)`
-  padding:10px;
-  border:1px solid #140e0e14;
-  margin:0 ;
-  margin-bottom:5px;
-  opacity:.9;
+  padding: 10px;
+  border: 1px solid #140e0e14;
+  margin: 0;
+  margin-bottom: 5px;
+  opacity: 0.9;
+`;
+
+const ErrorComponent = styled(ToolTip)`
+  background:#ff4a4a ;
+  color: white
 `
