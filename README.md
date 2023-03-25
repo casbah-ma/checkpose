@@ -17,12 +17,13 @@ Checkpose
 - 
 
 ## Screenshots
- <p align="center">
-  <img src="https://concierge.fra1.cdn.digitaloceanspaces.com/9f8e5657-2ab2-4671-9fcf-293e571caf74.jpg" alt="screenshot" align="center" >
+
+![9f8e5657-2ab2-4671-9fcf-293e571caf74](https://user-images.githubusercontent.com/9310597/227668766-e5211c5b-8b39-4b66-9040-b65713c11d08.jpg)
+
+![f73e5e02-52d2-473e-9dd0-a3858613e38a](https://user-images.githubusercontent.com/9310597/227668902-70c3c84e-eb16-40dd-b53b-0600a8b9cfa2.jpg)
+
    <br>
   <br>
-  <img src="https://concierge.fra1.cdn.digitaloceanspaces.com/f73e5e02-52d2-473e-9dd0-a3858613e38a.jpg"  alt="screenshot" align="center">
-</p>
 
 
 ## RoadMap
