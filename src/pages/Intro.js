@@ -59,7 +59,7 @@ function Intro() {
         </ButtonContainer>
       </Container>
       <Footer>
-        <a href="https://github.com/yelabbassi/checkpose" target="_blank" rel="noreferrer">
+        <a href="https://github.com/casbah-ma/checkpose" target="_blank" rel="noreferrer">
           Version {PACKAGE.version}
         </a>
       </Footer>
