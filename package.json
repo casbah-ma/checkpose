@@ -1,6 +1,6 @@
 {
   "name": "checkpose",
-  "version": "0.14.5",
+  "version": "0.14.6",
   "private": true,
   "dependencies": {
     "@mediapipe/pose": "^0.5.1635988162",
