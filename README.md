@@ -7,7 +7,7 @@ Checkpose
 
 </h1>
 
-<h4 align="center">Understand your body’s strengths and weaknesses using low-Cost Web Cameras</h4>
+<h4 align="center">Offline Body Movement Analysis in the Browser</h4>
   <br><br>
  
 
