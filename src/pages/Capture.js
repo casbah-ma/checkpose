@@ -168,12 +168,17 @@ const WebcamStreamCapture = () => {
         {!vidUrl && (
           <>
             <Spacer top={20} />
+            {
+              !!window.chrome && <ToolTip>
+              ❌ This app was tested on Chrome. If you encouter any problem, use a Chrome/Chromium browser.
+            </ToolTip>
+            }
             <ToolTip>
               💡 For better results, try Keep your subject within the Davinci
               Vitruvian Man
             </ToolTip>
             <ToolTip>
-              💡 When you press [Start] for the first time, this app may freeze
+            ⚠️ When you press [Start] for the first time, this app may freeze
               for few seconds.
             </ToolTip>
           </>
