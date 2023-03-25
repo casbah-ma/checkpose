@@ -38,4 +38,4 @@ Checkpose
 
 
 ## Licence
-MIT. Copyright (c) [Youssef El Abbassi](https://github.com/yelabbassi)
+GNU General Public License v3.0. Copyright (c) [Youssef El Abbassi](https://github.com/yelabbassi) & [Casbah MA](https://github.com/casbah-ma)
