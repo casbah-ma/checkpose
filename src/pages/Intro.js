@@ -5,7 +5,6 @@ import useKeyPress from "hooks/useKeyPress";
 import Layout, { Footer } from "components/Layout";
 import { Title, Paragraph } from "components/Typo";
 import { NewBtn } from "./Capture";
-import Spacer from "components/Spacer";
 import PACKAGE from "../../package.json";
 
 const TEXT = [
@@ -45,8 +44,6 @@ function Intro() {
   return (
     <Layout scroll>
       <Container>
-        <img src="/jump.gif" height="400px" width="auto" alt="jump" />
-        <Spacer bottom={50} />
         {TEXT.map((t, k) => (
           <div key={k}>
             <Title>{t.title}</Title>
