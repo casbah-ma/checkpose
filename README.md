@@ -11,18 +11,19 @@ Checkpose
   <br>
   <br>
 
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/9310597/227669723-864c6e54-a431-4ad0-963e-d9f694e375be.png)
+![image](https://user-images.githubusercontent.com/9310597/227669749-d4d52491-e3c5-41f8-a764-96b441ec93d3.png)
+
 ## Features
 - 
 - 
 - 
 
-## Screenshots
- <p align="center">
-  <img src="https://concierge.fra1.cdn.digitaloceanspaces.com/9f8e5657-2ab2-4671-9fcf-293e571caf74.jpg" alt="screenshot" align="center" >
+
    <br>
   <br>
-  <img src="https://concierge.fra1.cdn.digitaloceanspaces.com/f73e5e02-52d2-473e-9dd0-a3858613e38a.jpg"  alt="screenshot" align="center">
-</p>
 
 
 ## RoadMap
