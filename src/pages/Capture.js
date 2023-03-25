@@ -77,12 +77,9 @@ const WebcamStreamCapture = () => {
       setPlayBackRate(1);
       setVidUrl(null);
       if (webcamRef?.current?.stream) {
-        mediaRecorderRef.current = new MediaRecorder(
-          webcamRef.current.stream,
-          {
-            mimeType: "video/webm",
-          }
-        );
+        mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+          mimeType: "video/webm",
+        });
         mediaRecorderRef.current.addEventListener(
           "dataavailable",
           handleDataAvailable
@@ -197,7 +194,9 @@ const WebcamStreamCapture = () => {
           </>
         )}
       </WebCamContainer>
-      {!webcamRef?.current?.stream && !playing && <ToolTip>❌ No Webcam Stream</ToolTip>}
+      {!webcamRef?.current?.stream && !playing && (
+        <ToolTip>❌ No Webcam Stream</ToolTip>
+      )}
 
       {vidUrl && (
         <WebCamContainer>
@@ -238,9 +237,7 @@ const WebcamStreamCapture = () => {
           ) : null}
         </WebCamContainer>
       )}
-      <HomeButton>
-        <Link to="/">←</Link>
-      </HomeButton>
+      <HomeButton to="/">←</HomeButton>
 
       <ButtonContainer zIndex={99}>
         {capturing ? (
@@ -267,7 +264,7 @@ const ButtonContainer = styled.div`
   background: ${(props) => props.background};
 `;
 
-const HomeButton = styled.button`
+const HomeButton = styled(Link)`
   text-align: center;
   z-index: ${(props) => props.zIndex || 1};
   cursor: pointer;
@@ -279,14 +276,10 @@ const HomeButton = styled.button`
   bottom: 0;
   left: 0;
   margin-right: 20px;
-  a {
-    line-height: 15px;
-    font-size: 20px;
-    font-weight: 100;
-    text-decoration: none;
-    text-align: center;
-    color: white;
-  }
+
+  line-height: 15px;
+
+  color: white;
 `;
 
 const Button = styled.button`

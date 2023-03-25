@@ -29,14 +29,14 @@ Checkpose
 
 ## Run locally
   ```
-  $ git clone git@github.com:yelabbassi/checkpose.git
+  $ git clone git@github.com:casbah-ma/checkpose.git
   $ cd checkpose
   $ yarn
   $ yarn start
   ```
 
 ## Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yelabbassi/checkpose)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/casbah-ma/checkpose)
 
 
 ## Licence
