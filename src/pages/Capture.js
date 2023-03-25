@@ -169,7 +169,7 @@ const WebcamStreamCapture = () => {
           <>
             <Spacer top={20} />
             {
-              !!window.chrome && <ToolTip>
+              !window.chrome && <ToolTip>
               ❌ This app was tested on Chrome. If you encouter any problem, use a Chrome/Chromium browser.
             </ToolTip>
             }
