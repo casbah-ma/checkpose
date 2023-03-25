@@ -6,7 +6,6 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import Capture from "pages/Capture";
 import Analyze from "pages/Analyze";
 import Intro from "pages/Intro";
-import PACKAGE from "../package.json";
 import "rc-slider/assets/index.css";
 import "./index.css";
 
@@ -47,7 +46,7 @@ serviceWorkerRegistration.register({
 
     if (waitingServiceWorker) {
       waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-      toast(`🎉🎉 New Version ${PACKAGE.version}`)
+      toast(`🎉🎉 New Version`)
       toast('Updating...')
       setTimeout(()=>window.location.reload(),8000)
     }
