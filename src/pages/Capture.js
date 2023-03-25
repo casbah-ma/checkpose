@@ -78,7 +78,7 @@ const WebcamStreamCapture = () => {
       setVidUrl(null);
       if (webcamRef?.current?.stream) {
         mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-          mimeType: "video/mp4",
+          mimeType: (window.safari !== undefined) ? "video/mp4" : "video/webm",
         });
         mediaRecorderRef.current.addEventListener(
           "dataavailable",
