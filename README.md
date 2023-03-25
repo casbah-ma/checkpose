@@ -1,15 +1,15 @@
 <h1 align="center">
   <br>
   
-  <br>
+ 
 Checkpose
-  <br>
-  <br>
+ 
+
 </h1>
 
-<h4 align="center">Understand your body’s strengths and weaknesses from any browser</h4>
-  <br>
-  <br>
+<h4 align="center">Understand your body’s strengths and weaknesses offline</h4>
+  <br><br>
+ 
 
 ## Screenshots
 
@@ -22,20 +22,22 @@ Checkpose
 - 
 
 
-   <br>
-  <br>
-
-
-## RoadMap
--
--
-- 
-
 ## How it works
 -
 -
 -
 
+## Run locally
+  ```
+  $ git clone git@github.com:yelabbassi/checkpose.git
+  $ cd checkpose
+  $ yarn
+  $ yarn start
+  ```
+
+## Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yelabbassi/checkpose)
+
 
 ## Licence
-GNU General Public License v3.0. Copyright (c) [Youssef El Abbassi](https://github.com/yelabbassi) & [Casbah MA](https://github.com/casbah-ma)
+GNU General Public License v3.0. Copyright (c) [Casbah MA](https://github.com/casbah-ma)
