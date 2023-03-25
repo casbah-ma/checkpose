@@ -78,7 +78,7 @@ const WebcamStreamCapture = () => {
       setVidUrl(null);
       if (webcamRef?.current?.stream) {
         mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-          mimeType: "video/webm",
+          mimeType: "video/mp4",
         });
         mediaRecorderRef.current.addEventListener(
           "dataavailable",
