@@ -21,8 +21,8 @@ Checkpose
 
 ## Feature
 - Runs on modern browsers without internet or a remote server.
-- Analyze body movements with the comfort of a smartphone camera.
-- Visualize with graphics body's angles.
+- Analyze body movements with the easiness of a smartphone camera.
+- Visualize body's angles with graphics.
 - Privacy-focused design, as no images, videos or pose data are sent over the internet.
 
 
