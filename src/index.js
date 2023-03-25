@@ -6,6 +6,7 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import Capture from "pages/Capture";
 import Analyze from "pages/Analyze";
 import Intro from "pages/Intro";
+import UploadPage from "pages/Upload";
 import "rc-slider/assets/index.css";
 import "./index.css";
 
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/capture",
     element: <Capture />,
+  },
+  {
+    path: "/upload",
+    element: <UploadPage />,
   },
   {
     path: "/analyze",
