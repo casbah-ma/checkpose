@@ -70,21 +70,32 @@ const WebcamStreamCapture = () => {
       window.URL.revokeObjectURL(vidUrl);
     }
 
-    reset();
-    setPredictions([]);
-    setPlaying(false);
-    setPlayBackRate(1);
-    setVidUrl(null);
-    mediaRecorderRef.current = new MediaRecorder(webcamRef?.current?.stream, {
-      mimeType: "video/webm",
-    });
-    mediaRecorderRef.current.addEventListener(
-      "dataavailable",
-      handleDataAvailable
-    );
-    mediaRecorderRef.current.start();
-    setCapturing(true);
-    start();
+    try {
+      reset();
+      setPredictions([]);
+      setPlaying(false);
+      setPlayBackRate(1);
+      setVidUrl(null);
+      if (webcamRef?.current?.stream) {
+        mediaRecorderRef.current = new MediaRecorder(
+          webcamRef.current.stream,
+          {
+            mimeType: "video/webm",
+          }
+        );
+        mediaRecorderRef.current.addEventListener(
+          "dataavailable",
+          handleDataAvailable
+        );
+        mediaRecorderRef.current.start();
+        setCapturing(true);
+        start();
+      } else {
+        console.error("webcamRef.current.stream: Undefined");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }, [
     webcamRef,
     setCapturing,
@@ -168,22 +179,25 @@ const WebcamStreamCapture = () => {
         {!vidUrl && (
           <>
             <Spacer top={20} />
-            {
-              !window.chrome && <ToolTip>
-              ❌ This app was tested on Chrome. If you encouter any problem, use a Chrome/Chromium browser.
-            </ToolTip>
-            }
+            {!window.chrome && (
+              <ToolTip>
+                ❌ This app was tested on Chrome. If you encouter any problem,
+                use a Chrome/Chromium browser.
+              </ToolTip>
+            )}
+
             <ToolTip>
               💡 For better results, try Keep your subject within the Davinci
               Vitruvian Man
             </ToolTip>
             <ToolTip>
-            ⚠️ When you press [Start] for the first time, this app may freeze
+              ⚠️ When you press [Start] for the first time, this app may freeze
               for few seconds.
             </ToolTip>
           </>
         )}
       </WebCamContainer>
+      {!webcamRef?.current?.stream && !playing && <ToolTip>❌ No Webcam Stream</ToolTip>}
 
       {vidUrl && (
         <WebCamContainer>
@@ -224,12 +238,11 @@ const WebcamStreamCapture = () => {
           ) : null}
         </WebCamContainer>
       )}
-         <HomeButton>
-          <Link to="/">←</Link>
-        </HomeButton>
+      <HomeButton>
+        <Link to="/">←</Link>
+      </HomeButton>
 
       <ButtonContainer zIndex={99}>
-     
         {capturing ? (
           <>
             <Button onClick={handleStopCaptureClick}>Stop</Button>
@@ -264,15 +277,15 @@ const HomeButton = styled.button`
   background-color: #202020;
   position: absolute;
   bottom: 0;
-  left:0;
+  left: 0;
   margin-right: 20px;
   a {
-    line-height:15px ;
+    line-height: 15px;
     font-size: 20px;
     font-weight: 100;
     text-decoration: none;
     text-align: center;
-    color: white
+    color: white;
   }
 `;
 
