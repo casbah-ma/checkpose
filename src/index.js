@@ -51,9 +51,9 @@ serviceWorkerRegistration.register({
 
     if (waitingServiceWorker) {
       waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-      toast(`🎉🎉 New Version`)
+      toast(`🎉 New Version`)
       toast('Updating...')
-      setTimeout(()=>window.location.reload(),8000)
+      setTimeout(()=>window.location.reload(),3500)
     }
   }
 })
