@@ -11,14 +11,18 @@ overflow-x: hidden ;
 `
 
 export const Footer = styled.div`
-min-height:40vh;
+height:50px;
 margin: 0px auto;
 width:100%;
 padding-top:20px ;
 background-color: #111111;
 text-align:center;
 a{
-    color:white
+    color:white;
+    text-decoration:none;
+    :before{
+        content: " 🔗 ";
+    }
 }
 `
 
