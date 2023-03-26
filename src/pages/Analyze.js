@@ -3,12 +3,15 @@ import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import Slider from "rc-slider";
 import Layout from "components/Layout";
+import { Title } from "components/Typo";
 import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
 import findAngle, { calculateAngle2Vectors }  from "lib/findAngle";
 import { NewBtn } from "./Capture";
 import Skeleton from "components/Skeleton";
 import Spacer from "components/Spacer";
+
+const SPACING = 50
 
 function Analyze(props) {
   const navigate = useNavigate();
@@ -185,34 +188,34 @@ function Analyze(props) {
           </Fixed>
          
           <Spacer bottom={350} />
-          <label>Accuracy %</label>
+          <Title>Accuracy %</Title>
           <LineChartComponent
             small
             color={"red"}
             data={angles}
             dataKeys={["score"]}
           />
-          <Spacer />
-          <label>Knees angles</label>
-          <Spacer />
+          <Spacer bottom={SPACING} />
+          <Title>Knees angles</Title>
+        
           <LineChartComponent
             data={angles}
             dataKeys={["rightKnee", "leftKnee"]}
           />
-          <Spacer />
-          <label>Elbows angles</label>
-          <Spacer />
+          <Spacer bottom={SPACING} />
+          <Title>Elbows angles</Title>
+        
           <LineChartComponent
             data={angles}
             dataKeys={["rightElbow", "leftElbow"]}
           />
-          <Spacer />
-          <label>Back angle (shoulder, hip, knee)</label>
-          <Spacer />
+          <Spacer bottom={SPACING} />
+          <Title>Back angle (shoulder, hip, knee)</Title>
+        
           <LineChartComponent data={angles} dataKeys={["backRight", "backLeft"]} />
-          <Spacer />
-          <label>Shoulder Hips parallelism: 0 degree angle means they are Parallel</label>
-          <Spacer />
+          <Spacer bottom={SPACING} />
+          <Title>Shoulder Hips parallelism: 0 degree angle means they are Parallel</Title>
+        
           <LineChartComponent
             data={angles}
             dataKeys={["hipShoulder"]}
@@ -227,6 +230,7 @@ function Analyze(props) {
 }
 
 export default Analyze;
+
 
 const VidContainer = styled.div`
   position: absolute;
