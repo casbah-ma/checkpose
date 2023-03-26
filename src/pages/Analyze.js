@@ -6,12 +6,12 @@ import Layout from "components/Layout";
 import { Title } from "components/Typo";
 import LineChartComponent from "components/LineChart";
 import bodyMapper from "lib/bodyMap";
-import findAngle, { calculateAngle2Vectors }  from "lib/findAngle";
+import findAngle, { calculateAngle2Vectors } from "lib/findAngle";
 import { NewBtn } from "./Capture";
 import Skeleton from "components/Skeleton";
 import Spacer from "components/Spacer";
 
-const SPACING = 50
+const SPACING = 50;
 
 function Analyze(props) {
   const navigate = useNavigate();
@@ -110,8 +110,8 @@ function Analyze(props) {
           bmap.rightHip.coords,
           bmap.leftHip.coords,
           bmap.rightShoulder.coords,
-          bmap.leftShoulder.coords,
-        )
+          bmap.leftShoulder.coords
+        );
 
         output.push({
           rightKnee,
@@ -121,7 +121,7 @@ function Analyze(props) {
           backRight,
           backLeft,
           hipShoulder,
-          score: Math.round((predictions[i].score)*100),
+          score: Math.round(predictions[i].score * 100),
           time: predictions[i].time - predictions[0].time,
         });
       }
@@ -130,6 +130,15 @@ function Analyze(props) {
     }
   }, [predictions]);
 
+  const averageAccuracy = useMemo(
+    () => {
+      if (angles?.length > 0) {
+        return angles.reduce((total, next) => total + next.score, 0) / angles.length
+      }
+      return null
+    },  [angles]
+  );
+  
   return (
     <Layout scroll>
       {predictions && (
@@ -182,13 +191,11 @@ function Analyze(props) {
                 shouldDisplayValue={false}
               />
             </SliderContainer>
-          
-
-         
           </Fixed>
-         
+
           <Spacer bottom={350} />
-          <Title>Accuracy %</Title>
+          <Title>Accuracy</Title>
+          <Tag>AV { Math.round(averageAccuracy) }%</Tag>
           <LineChartComponent
             small
             color={"red"}
@@ -196,30 +203,37 @@ function Analyze(props) {
             dataKeys={["score"]}
           />
           <Spacer bottom={SPACING} />
-          <Title>Knees angles</Title>
-        
+          <Title>Knees </Title>
+          <Tag>Angles</Tag>
+
           <LineChartComponent
             data={angles}
             dataKeys={["rightKnee", "leftKnee"]}
           />
           <Spacer bottom={SPACING} />
-          <Title>Elbows angles</Title>
-        
+          <Title>Elbow</Title>
+          <Tag>Angles</Tag>
           <LineChartComponent
             data={angles}
             dataKeys={["rightElbow", "leftElbow"]}
           />
           <Spacer bottom={SPACING} />
-          <Title>Back angle (shoulder, hip, knee)</Title>
-        
-          <LineChartComponent data={angles} dataKeys={["backRight", "backLeft"]} />
-          <Spacer bottom={SPACING} />
-          <Title>Shoulder Hips parallelism: 0 degree angle means they are Parallel</Title>
-        
+          <Title>Back angle</Title>
+          <Tag>Shoulder((hip))knee</Tag>
+
           <LineChartComponent
             data={angles}
-            dataKeys={["hipShoulder"]}
+            dataKeys={["backRight", "backLeft"]}
           />
+          <Spacer bottom={SPACING} />
+          <Title>
+            Shoulder Hip parallelism
+          </Title>
+          <Tag>0 degree means they are Parallel</Tag>
+
+
+          <LineChartComponent data={angles} dataKeys={["hipShoulder"]} />
+          <Spacer bottom={350} />
           <ButtonContainer zIndex={99999999}>
             <NewBtn onClick={() => navigate("/capture")}>New</NewBtn>
           </ButtonContainer>
@@ -269,7 +283,7 @@ const ControlsContainer = styled.div`
   padding: 10px;
   background-color: #fbeee0;
   border: 2px solid #422800;
-  
+
   box-shadow: #422800 4px 4px 0 0;
   color: #422800;
   cursor: pointer;
@@ -319,7 +333,6 @@ const Fixed = styled.div`
   margin: 0 auto;
 `;
 
-
 const ButtonContainer = styled.div`
   position: fixed;
   bottom: 50px;
@@ -330,3 +343,6 @@ const ButtonContainer = styled.div`
   background: ${(props) => props.background};
 `;
 
+const Tag = styled.div`
+
+`
