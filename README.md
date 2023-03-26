@@ -36,7 +36,7 @@ Checkpose
 
 
 ## About
-This app was initiated by [a parent](https://github.com/yelabbassi) to help out coaches improve kids skills at [Club de patinage de vitesse Gatineau.](https://www.cpvgatineau.ca/)
+This app was inspired by the amazing people at [Club de patinage de vitesse de Gatineau, ](https://www.cpvgatineau.ca/) and was designed to provide coaches with a helpful tool. 
 
 
 ## Licence
