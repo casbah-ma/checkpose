@@ -266,11 +266,10 @@ const ControlsContainer = styled.div`
   position: absolute;
   background-color: white;
   left: 0;
-
   padding: 10px;
   background-color: #fbeee0;
   border: 2px solid #422800;
-  border-radius: 30px;
+  
   box-shadow: #422800 4px 4px 0 0;
   color: #422800;
   cursor: pointer;
