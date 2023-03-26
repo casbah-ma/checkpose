@@ -20,10 +20,19 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!-- Start Cloudflare Web Analytics -->
-    <script 
-      defer 
-      src='https://static.cloudflareinsights.com/beacon.min.js' 
-      data-cf-beacon='{"token": "8d9cfd48b96d42dc99525d0239301299"}'>
-    </script><!-- End Cloudflare Web Analytics -->
+    <script>
+      const vercelToken = '{"token": "8d9cfd48b96d42dc99525d0239301299"}'
+      const dotcomToken = '{"token": "08c47a681c8a431aa0726a9eb494669a"}'
+      const isVercel = window.location.host === 'checkpose.vercel.app'
+      function addScript( src ) {
+        var s = document.createElement( 'script' );
+        s.setAttribute( 'src', 'https://static.cloudflareinsights.com/beacon.min.js' );
+        s.setAttribute('data-cf-beacon', isVercel ? vercelToken : dotcomToken)
+        s.defer = true;
+        document.body.appendChild( s );
+      }
+      addScript()
+    </script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
