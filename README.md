@@ -16,7 +16,7 @@ Checkpose
 ![image](https://user-images.githubusercontent.com/9310597/227669723-864c6e54-a431-4ad0-963e-d9f694e375be.png)
 ![image](https://user-images.githubusercontent.com/9310597/227669749-d4d52491-e3c5-41f8-a764-96b441ec93d3.png)
 
-## Online demo
+## Demo
 [https://checkpose.vercel.app](https://checkpose.vercel.app)
 
 ## Feature
