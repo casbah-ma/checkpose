@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import styled from "styled-components";
+import Spacer from "components/Spacer";
 import { useNavigate } from "react-router-dom";
 import useKeyPress from "hooks/useKeyPress";
 import Layout, { Footer } from "components/Layout";
@@ -60,6 +61,7 @@ function Intro() {
           Version {PACKAGE.version}
         </a>
       </Footer>
+      <Spacer bottom={ 200 } />
     </Layout>
   );
 }
