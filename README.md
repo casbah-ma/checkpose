@@ -17,7 +17,7 @@ Checkpose
 ![image](https://user-images.githubusercontent.com/9310597/227669749-d4d52491-e3c5-41f8-a764-96b441ec93d3.png)
 
 ## Demo
-[https://checkpose.vercel.app](https://checkpose.vercel.app)
+[https://checkpose.com](https://checkpose.com)
 
 ## Features
 - Runs on modern browsers without internet or a remote server.
