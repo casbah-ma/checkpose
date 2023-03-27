@@ -7,7 +7,7 @@ Checkpose
 
 </h1>
 
-<h4 align="center">Offline Body Movement Analysis in the Browser</h4>
+<h4 align="center">Offline Body Movement Analysis in the Browser (Experimental)</h4>
   <br><br>
  
 
