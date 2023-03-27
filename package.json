@@ -2,6 +2,22 @@
   "name": "checkpose",
   "version": "0.17.0",
   "private": true,
+  "licence": "GPL-3.0-only",
+  "authors": [
+    "Youssef El Abbassi <youssef@ctd.ma>"
+  ],
+  "keywords": [
+    "movement",
+    "pose",
+    "tracking",
+    "Browser",
+    "offline"
+  ],
+  "homepage": "https://checkpose.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/casbah-ma/checkpose.git"
+  },
   "dependencies": {
     "@mediapipe/pose": "^0.5.1635988162",
     "@tensorflow-models/pose-detection": "^2.0.0",
