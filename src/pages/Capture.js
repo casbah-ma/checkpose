@@ -14,6 +14,7 @@ import videoConstraints from "constants/videoConstraints";
 import { Paragraph } from "components/Typo";
 
 const WebcamStreamCapture = () => {
+  const [starting, setStarting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const { time, start, pause, reset } = useTimer();
   const [capturing, setCapturing] = useState(false);
@@ -64,6 +65,7 @@ const WebcamStreamCapture = () => {
   );
 
   const handleStartCaptureClick = useCallback(() => {
+    setStarting(false);
     setErrorMessage(null);
 
     if (vidUrl && window?.URL?.revokeObjectURL) {
@@ -78,7 +80,7 @@ const WebcamStreamCapture = () => {
       setVidUrl(null);
       if (webcamRef?.current?.stream) {
         mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-          mimeType: (window.safari !== undefined) ? "video/mp4" : "video/webm",
+          mimeType: window.safari !== undefined ? "video/mp4" : "video/webm",
         });
         mediaRecorderRef.current.addEventListener(
           "dataavailable",
@@ -182,14 +184,9 @@ const WebcamStreamCapture = () => {
                 use a Chrome/Chromium browser.
               </ToolTip>
             )}
-
             <ToolTip>
               💡 For better results, try Keep your subject within the Davinci
               Vitruvian Man
-            </ToolTip>
-            <ToolTip>
-              ⚠️ When you press [Start] for the first time, this app may freeze
-              for few seconds.
             </ToolTip>
           </>
         )}
@@ -245,7 +242,15 @@ const WebcamStreamCapture = () => {
             <Button onClick={handleStopCaptureClick}>Stop</Button>
           </>
         ) : (
-          <NewBtn onClick={handleStartCaptureClick}>Start</NewBtn>
+          <NewBtn
+            disabled={starting}
+            onClick={() => {
+              setStarting(true);
+              setTimeout(() => handleStartCaptureClick(), 500);
+            }}
+          >
+            {starting ? "Starting" : "Start"}
+          </NewBtn>
         )}
       </ButtonContainer>
     </Layout>
@@ -289,7 +294,7 @@ const Button = styled.button`
   border-radius: 50%;
   background-color: ${(props) => props.bg || "#FC4847"};
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 100;
   color: ${(props) => (props.bg ? "black" : "white")};
   text-align: center;
   box-shadow: #422800 4px 4px 0 0;

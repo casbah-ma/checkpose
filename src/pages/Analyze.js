@@ -218,8 +218,8 @@ function Analyze(props) {
             dataKeys={["rightElbow", "leftElbow"]}
           />
           <Spacer bottom={SPACING} />
-          <Title>Back angle</Title>
-          <Tag>Shoulder((hip))knee</Tag>
+          <Title>Back</Title>
+          <Tag>Shoulder((hip))knee angles</Tag>
 
           <LineChartComponent
             data={angles}
