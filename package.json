@@ -24,7 +24,6 @@
     "styled-components": "^5.3.6",
     "use-timer": "^2.0.1",
     "web-vitals": "^2.1.4",
-    "yarn": "^1.22.19",
     "zustand": "^4.3.6"
   },
   "scripts": {
